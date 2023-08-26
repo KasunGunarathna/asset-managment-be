@@ -16,7 +16,7 @@ import { UpdateBridgeDto } from './dto/update-bridge.dto';
 export class BridgesController {
   constructor(private readonly bridgesService: BridgesService) {}
 
-  @Post('bridges/')
+  @Post('/')
   async create(@Body() createBridgeDto: CreateBridgeDto) {
     const data = await this.bridgesService.create(createBridgeDto);
     return {
@@ -26,7 +26,7 @@ export class BridgesController {
     };
   }
 
-  @Get('bridges/')
+  @Get('/')
   async findAll() {
     const data = await this.bridgesService.findAll();
     return {
@@ -36,7 +36,7 @@ export class BridgesController {
     };
   }
 
-  @Get('bridges/:id')
+  @Get('/:id')
   async findOne(@Param('id') id: string) {
     const data = await this.bridgesService.findOne(+id);
     return {
@@ -46,7 +46,7 @@ export class BridgesController {
     };
   }
 
-  @Patch('bridges/:id')
+  @Patch('/:id')
   async update(
     @Param('id') id: string,
     @Body() updateBridgeDto: UpdateBridgeDto,
@@ -59,7 +59,7 @@ export class BridgesController {
     };
   }
 
-  @Delete('bridges/:id')
+  @Delete('/:id')
   async remove(@Param('id') id: string) {
     const data = await this.bridgesService.remove(+id);
     return {
