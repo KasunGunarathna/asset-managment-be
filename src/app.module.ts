@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BridgesModule } from './bridges/bridges.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BridgesEntity } from './bridges/entities/bridge.entity';
+import { RoadsModule } from './roads/roads.module';
 
 @Module({
   imports: [
@@ -16,9 +16,10 @@ import { BridgesEntity } from './bridges/entities/bridge.entity';
       database: 'asset_mng',
       synchronize: true,
       logging: true,
-      entities: [BridgesEntity],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
     }),
     BridgesModule,
+    RoadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
