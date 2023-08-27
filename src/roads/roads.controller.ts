@@ -14,11 +14,11 @@ import { UpdateRoadDto } from './dto/update-roads.dto';
 
 @Controller('roads')
 export class RoadsController {
-  constructor(private readonly RoadsService: RoadsService) {}
+  constructor(private readonly roadsService: RoadsService) {}
 
   @Post('/')
   async create(@Body() createRoadDto: CreateRoadDto) {
-    const data = await this.RoadsService.create(createRoadDto);
+    const data = await this.roadsService.create(createRoadDto);
     return {
       statusCode: HttpStatus.OK,
       message: 'Road created successfully',
@@ -28,7 +28,7 @@ export class RoadsController {
 
   @Get('/')
   async findAll() {
-    const data = await this.RoadsService.findAll();
+    const data = await this.roadsService.findAll();
     return {
       statusCode: HttpStatus.OK,
       message: 'Road fetched successfully',
@@ -38,7 +38,7 @@ export class RoadsController {
 
   @Get('/:id')
   async findOne(@Param('id') id: string) {
-    const data = await this.RoadsService.findOne(+id);
+    const data = await this.roadsService.findOne(+id);
     return {
       statusCode: HttpStatus.OK,
       message: 'Road fetched successfully',
@@ -48,7 +48,7 @@ export class RoadsController {
 
   @Patch('/:id')
   async update(@Param('id') id: string, @Body() updateRoadDto: UpdateRoadDto) {
-    const data = await this.RoadsService.update(+id, updateRoadDto);
+    const data = await this.roadsService.update(+id, updateRoadDto);
     return {
       statusCode: HttpStatus.OK,
       message: 'Road updated successfully',
@@ -58,7 +58,7 @@ export class RoadsController {
 
   @Delete('/:id')
   async remove(@Param('id') id: string) {
-    const data = await this.RoadsService.remove(+id);
+    const data = await this.roadsService.remove(+id);
     return {
       statusCode: HttpStatus.OK,
       message: 'Road deleted successfully',
