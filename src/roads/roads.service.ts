@@ -9,29 +9,29 @@ import { Repository } from 'typeorm';
 export class RoadsService {
   constructor(
     @InjectRepository(RoadEntity)
-    private RoadsRepository: Repository<RoadEntity>,
+    private roadsRepository: Repository<RoadEntity>,
   ) {}
   async create(createRoadDto: CreateRoadDto) {
-    const user = await this.RoadsRepository.create(createRoadDto);
-    await this.RoadsRepository.save(createRoadDto);
+    const user = await this.roadsRepository.create(createRoadDto);
+    await this.roadsRepository.save(createRoadDto);
     return user;
   }
 
   async findAll() {
-    return await this.RoadsRepository.find();
+    return await this.roadsRepository.find();
   }
 
   async findOne(id: number) {
-    return await this.RoadsRepository.findOne({ where: { id: id } });
+    return await this.roadsRepository.findOne({ where: { id: id } });
   }
 
   async update(id: number, updateRoadDto: UpdateRoadDto) {
-    await this.RoadsRepository.update({ id }, updateRoadDto);
-    return await this.RoadsRepository.findOne({ where: { id: id } });
+    await this.roadsRepository.update({ id }, updateRoadDto);
+    return await this.roadsRepository.findOne({ where: { id: id } });
   }
 
   async remove(id: number) {
-    await this.RoadsRepository.delete({ id });
+    await this.roadsRepository.delete({ id });
     return { deleted: true };
   }
 }
