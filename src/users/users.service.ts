@@ -40,4 +40,8 @@ export class UsersService {
     await this.usersRepository.delete({ id });
     return { deleted: true };
   }
+
+  async findByNic(nic: string): Promise<UsersEntity | undefined> {
+    return this.usersRepository.findOne({ where: { nic } });
+  }
 }
