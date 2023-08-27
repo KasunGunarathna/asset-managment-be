@@ -7,6 +7,7 @@ import { RoadsModule } from './roads/roads.module';
 import { StreetLightsModule } from './street_lights/street_lights.module';
 import { DrainagesModule } from './drainage/drainages.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './authentication/auth.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UsersModule } from './users/users.module';
     StreetLightsModule,
     DrainagesModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
