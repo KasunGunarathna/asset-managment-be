@@ -2,14 +2,14 @@ import { IsString, IsEnum } from 'class-validator';
 
 enum PoleType {
   Concrete = 'Concrete',
-  Steel = 'Steel'
+  Steel = 'Steel',
 }
 
 enum LampType {
   LED = 'LED',
   CFL = 'CFL',
   Pillement = 'Pillement',
-  Halogen = 'Halogen'
+  Halogen = 'Halogen',
 }
 
 export class CreateStreetLightDto {
