@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 enum PavementType {
   Asphalt = 'Asphalt',
   Tar = 'Tar',
@@ -68,4 +74,10 @@ export class RoadEntity {
 
   @Column({ type: 'enum', enum: DrainageAvailability })
   drainage_availability: DrainageAvailability;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }
