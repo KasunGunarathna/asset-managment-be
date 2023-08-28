@@ -18,7 +18,7 @@ import { AuthGuard } from 'src/authentication/auth.guard';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
+  @UseGuards(AuthGuard)
   @Post('/')
   async create(@Body() createUserDto: CreateUserDto) {
     const existingUser = await this.usersService.findByNic(createUserDto.nic);
@@ -43,7 +43,7 @@ export class UsersController {
       data: data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
     const data = await this.usersService.findOne(+id);
@@ -53,7 +53,7 @@ export class UsersController {
       data: data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Patch('/:id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const data = await this.usersService.update(+id, updateUserDto);
@@ -63,7 +63,7 @@ export class UsersController {
       data: data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Delete('/:id')
   async remove(@Param('id') id: string) {
     const data = await this.usersService.remove(+id);

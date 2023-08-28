@@ -7,15 +7,17 @@ import {
   Param,
   Delete,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { BridgesService } from './bridges.service';
 import { CreateBridgeDto } from './dto/create-bridge.dto';
 import { UpdateBridgeDto } from './dto/update-bridge.dto';
+import { AuthGuard } from 'src/authentication/auth.guard';
 
 @Controller('bridges')
 export class BridgesController {
   constructor(private readonly bridgesService: BridgesService) {}
-
+  @UseGuards(AuthGuard)
   @Post('/')
   async create(@Body() createBridgeDto: CreateBridgeDto) {
     const data = await this.bridgesService.create(createBridgeDto);
@@ -25,7 +27,7 @@ export class BridgesController {
       data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Get('/')
   async findAll() {
     const data = await this.bridgesService.findAll();
@@ -35,7 +37,7 @@ export class BridgesController {
       data: data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
     const data = await this.bridgesService.findOne(+id);
@@ -45,7 +47,7 @@ export class BridgesController {
       data: data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Patch('/:id')
   async update(
     @Param('id') id: string,
@@ -58,7 +60,7 @@ export class BridgesController {
       data: data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Delete('/:id')
   async remove(@Param('id') id: string) {
     const data = await this.bridgesService.remove(+id);
