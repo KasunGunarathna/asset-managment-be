@@ -7,15 +7,17 @@ import {
   Param,
   Delete,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { RoadsService } from './roads.service';
 import { CreateRoadDto } from './dto/create-roads.dto';
 import { UpdateRoadDto } from './dto/update-roads.dto';
+import { AuthGuard } from 'src/authentication/auth.guard';
 
 @Controller('roads')
 export class RoadsController {
   constructor(private readonly roadsService: RoadsService) {}
-
+  @UseGuards(AuthGuard)
   @Post('/')
   async create(@Body() createRoadDto: CreateRoadDto) {
     const data = await this.roadsService.create(createRoadDto);
@@ -25,7 +27,7 @@ export class RoadsController {
       data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Get('/')
   async findAll() {
     const data = await this.roadsService.findAll();
@@ -35,7 +37,7 @@ export class RoadsController {
       data: data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
     const data = await this.roadsService.findOne(+id);
@@ -45,7 +47,7 @@ export class RoadsController {
       data: data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Patch('/:id')
   async update(@Param('id') id: string, @Body() updateRoadDto: UpdateRoadDto) {
     const data = await this.roadsService.update(+id, updateRoadDto);
@@ -55,7 +57,7 @@ export class RoadsController {
       data: data,
     };
   }
-
+  @UseGuards(AuthGuard)
   @Delete('/:id')
   async remove(@Param('id') id: string) {
     const data = await this.roadsService.remove(+id);

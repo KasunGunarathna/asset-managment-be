@@ -1,3 +1,4 @@
+import { JwtService } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
 import { StreetLightsService } from './street_lights.service';
 import { StreetLightsController } from './street_lights.controller';
@@ -7,6 +8,6 @@ import { StreetLightEntity } from './entities/street_lights.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([StreetLightEntity])],
   controllers: [StreetLightsController],
-  providers: [StreetLightsService],
+  providers: [JwtService, StreetLightsService],
 })
 export class StreetLightsModule {}
