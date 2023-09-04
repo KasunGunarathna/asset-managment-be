@@ -53,6 +53,18 @@ export class UsersController {
       data: data,
     };
   }
+
+  @UseGuards(AuthGuard)
+  @Get('/nic/:nic')
+  async findOneByNic(@Param('nic') nic: string) {
+    const data = await this.usersService.findOneByNic(nic);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User fetched successfully',
+      data: data,
+    };
+  }
+
   @UseGuards(AuthGuard)
   @Patch('/:id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

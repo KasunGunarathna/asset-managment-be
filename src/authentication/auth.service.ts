@@ -14,8 +14,10 @@ export class AuthService {
     const user = await this.userService.findByNic(nic);
     if (user && bcrypt.compareSync(pass, user.password)) {
       const payload = { sub: user.id, username: user.name };
+      const expiresIn = 3600;
       return {
         access_token: await this.jwtService.signAsync(payload),
+        expires_in: expiresIn,
       };
     }
     throw new UnauthorizedException('Invalid credentials');
