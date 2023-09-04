@@ -31,6 +31,10 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { id: id } });
   }
 
+  async findOneByNic(nic: string) {
+    return await this.usersRepository.findOne({ where: { nic: nic } });
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     await this.usersRepository.update({ id }, updateUserDto);
     return await this.usersRepository.findOne({ where: { id: id } });
