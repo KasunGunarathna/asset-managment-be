@@ -9,6 +9,7 @@ export function simpleEncrypt(text: string, key: string): string {
 
 export function simpleDecrypt(encryptedText: string, key: string): string {
   let result = '';
+
   for (let i = 0; i < encryptedText.length; i++) {
     const charCode =
       encryptedText.charCodeAt(i) ^ key.charCodeAt(i % key.length);
