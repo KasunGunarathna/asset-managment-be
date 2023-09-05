@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
-import { simpleDecrypt } from 'src/utils/hash';
+import { simpleDecrypt, simpleEncrypt } from 'src/utils/hash';
 
 const encryptionKey = 'mysecretkey';
 @Injectable()
@@ -12,6 +12,8 @@ export class AuthService {
   ) {}
 
   async login(nic: string, pass: string) {
+    const res = simpleEncrypt(pass, encryptionKey);
+    console.log(res);
     const user = await this.userService.findByNic(nic);
     if (user && simpleDecrypt(pass, encryptionKey) === user.password) {
       const payload = { sub: user.id, username: user.name };

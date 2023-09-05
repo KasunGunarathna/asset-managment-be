@@ -39,6 +39,10 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
+    updateUserDto.password = simpleEncrypt(
+      updateUserDto.password,
+      encryptionKey,
+    );
     await this.usersRepository.update({ id }, updateUserDto);
     return await this.usersRepository.findOne({ where: { id: id } });
   }
