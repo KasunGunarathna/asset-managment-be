@@ -34,4 +34,13 @@ export class RoadsService {
     await this.roadsRepository.delete({ id });
     return { deleted: true };
   }
+
+  async findAllBySearch(query: string): Promise<RoadEntity[]> {
+    return this.roadsRepository
+      .createQueryBuilder('roads')
+      .where('roads.road_name LIKE :query', {
+        query: `%${query}%`,
+      })
+      .getMany();
+  }
 }
