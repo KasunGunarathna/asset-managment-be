@@ -55,4 +55,13 @@ export class UsersService {
   async findByNic(nic: string): Promise<UsersEntity | undefined> {
     return this.usersRepository.findOne({ where: { nic } });
   }
+
+  async findAllBySearch(query: string): Promise<UsersEntity[]> {
+    return this.usersRepository
+      .createQueryBuilder('users')
+      .where('users.name LIKE :query OR users.nic LIKE :query', {
+        query: `%${query}%`,
+      })
+      .getMany();
+  }
 }

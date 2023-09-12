@@ -34,4 +34,16 @@ export class StreetLightsService {
     await this.streetLightsRepository.delete({ id });
     return { deleted: true };
   }
+
+  async findAllBySearch(query: string): Promise<StreetLightEntity[]> {
+    return this.streetLightsRepository
+      .createQueryBuilder('street_lights')
+      .where(
+        'street_lights.road_name LIKE :query OR street_lights.pole_number LIKE :query',
+        {
+          query: `%${query}%`,
+        },
+      )
+      .getMany();
+  }
 }

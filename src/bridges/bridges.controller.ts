@@ -37,6 +37,18 @@ export class BridgesController {
       data: data,
     };
   }
+
+  @UseGuards(AuthGuard)
+  @Get('/query/:query')
+  async findAllBySearch(@Param('query') query: string) {
+    const data = await this.bridgesService.findAllBySearch(query);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Users fetched successfully',
+      data: data,
+    };
+  }
+
   @UseGuards(AuthGuard)
   @Get('/:id')
   async findOne(@Param('id') id: string) {

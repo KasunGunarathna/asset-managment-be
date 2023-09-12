@@ -34,4 +34,13 @@ export class DrainagesService {
     await this.drainagesRepository.delete({ id });
     return { deleted: true };
   }
+
+  async findAllBySearch(query: string): Promise<DrainageEntity[]> {
+    return this.drainagesRepository
+      .createQueryBuilder('drainage')
+      .where('drainage.road_name LIKE :query', {
+        query: `%${query}%`,
+      })
+      .getMany();
+  }
 }

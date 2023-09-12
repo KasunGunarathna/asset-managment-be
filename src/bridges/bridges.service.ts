@@ -34,4 +34,16 @@ export class BridgesService {
     await this.bridgesRepository.delete({ id });
     return { deleted: true };
   }
+
+  async findAllBySearch(query: string): Promise<BridgesEntity[]> {
+    return this.bridgesRepository
+      .createQueryBuilder('bridges')
+      .where(
+        'bridges.bridge_name LIKE :query OR bridges.road_name LIKE :query',
+        {
+          query: `%${query}%`,
+        },
+      )
+      .getMany();
+  }
 }

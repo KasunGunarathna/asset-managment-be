@@ -39,10 +39,22 @@ export class UsersController {
     const data = await this.usersService.findAll();
     return {
       statusCode: HttpStatus.OK,
-      message: 'User fetched successfully',
+      message: 'Users fetched successfully',
       data: data,
     };
   }
+
+  @UseGuards(AuthGuard)
+  @Get('/query/:query')
+  async findAllBySearch(@Param('query') query: string) {
+    const data = await this.usersService.findAllBySearch(query);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Users fetched successfully',
+      data: data,
+    };
+  }
+
   @UseGuards(AuthGuard)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
