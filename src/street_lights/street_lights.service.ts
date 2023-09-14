@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStreetLightDto } from './dto/create-street_lights.dto';
 import { UpdateStreetLightDto } from './dto/update-street_lights.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StreetLightEntity } from './entities/street_lights.entity';
 import { Repository } from 'typeorm';
+import * as fs from 'fs/promises';
+import * as fs2 from 'fs';
 
 @Injectable()
 export class StreetLightsService {
@@ -45,5 +47,37 @@ export class StreetLightsService {
         },
       )
       .getMany();
+  }
+
+  async updateImage(id: number, imageUrl: string): Promise<StreetLightEntity> {
+    const light = await this.streetLightsRepository.findOne({
+      where: { id: id },
+    });
+    if (!light) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    light.photo = imageUrl;
+    await this.streetLightsRepository.update({ id }, light);
+
+    return light;
+  }
+
+  async saveFileLocally(
+    uniqueFileName: string,
+    fileBuffer: Buffer,
+  ): Promise<string> {
+    const uploadDirectory = './uploads';
+    const filePath = `${uploadDirectory}/${uniqueFileName}`;
+    await fs.writeFile(filePath, fileBuffer);
+    return filePath;
+  }
+
+  async readProfileImage(imagePath: string): Promise<fs2.ReadStream> {
+    try {
+      const imageStream = fs2.createReadStream(imagePath);
+      return imageStream;
+    } catch (error) {
+      throw new NotFoundException('Road image not found');
+    }
   }
 }
