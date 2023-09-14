@@ -74,7 +74,6 @@ export class StreetLightsService {
 
   async readProfileImage(imagePath: string): Promise<fs2.ReadStream> {
     try {
-      // Read the image file and return it as a readable stream
       const imageStream = fs2.createReadStream(imagePath);
       return imageStream;
     } catch (error) {
