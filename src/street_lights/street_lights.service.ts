@@ -14,9 +14,8 @@ export class StreetLightsService {
     private streetLightsRepository: Repository<StreetLightEntity>,
   ) {}
   async create(createStreetLightDto: CreateStreetLightDto) {
-    const user = await this.streetLightsRepository.create(createStreetLightDto);
-    await this.streetLightsRepository.save(createStreetLightDto);
-    return user;
+    const light = await this.streetLightsRepository.save(createStreetLightDto);
+    return light;
   }
 
   async findAll() {

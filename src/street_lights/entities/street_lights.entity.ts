@@ -14,7 +14,7 @@ enum PoleType {
 enum LampType {
   LED = 'LED',
   CFL = 'CFL',
-  Pillement = 'Pillement',
+  Filament = 'Filament',
   Halogen = 'Halogen',
 }
 
@@ -41,7 +41,7 @@ export class StreetLightEntity {
   @Column({ type: 'enum', enum: LampType })
   lamp_type: LampType;
 
-  @Column()
+  @Column({ default: null })
   photo: string;
 
   @CreateDateColumn({ type: 'timestamp' })

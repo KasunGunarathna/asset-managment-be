@@ -8,7 +8,7 @@ enum PoleType {
 enum LampType {
   LED = 'LED',
   CFL = 'CFL',
-  Pillement = 'Pillement',
+  Filament = 'Filament',
   Halogen = 'Halogen',
 }
 
@@ -31,6 +31,5 @@ export class CreateStreetLightDto {
   @IsEnum(LampType)
   lamp_type: LampType;
 
-  @IsString()
   photo: string;
 }
