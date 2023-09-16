@@ -14,9 +14,8 @@ export class StreetLightsService {
     private streetLightsRepository: Repository<StreetLightEntity>,
   ) {}
   async create(createStreetLightDto: CreateStreetLightDto) {
-    const user = await this.streetLightsRepository.create(createStreetLightDto);
-    await this.streetLightsRepository.save(createStreetLightDto);
-    return user;
+    const light = await this.streetLightsRepository.save(createStreetLightDto);
+    return light;
   }
 
   async findAll() {
@@ -38,7 +37,7 @@ export class StreetLightsService {
   }
 
   async findAllBySearch(query: string): Promise<StreetLightEntity[]> {
-    return this.streetLightsRepository
+    return await this.streetLightsRepository
       .createQueryBuilder('street_lights')
       .where(
         'street_lights.road_name LIKE :query OR street_lights.pole_number LIKE :query',
@@ -74,6 +73,9 @@ export class StreetLightsService {
 
   async readProfileImage(imagePath: string): Promise<fs2.ReadStream> {
     try {
+      if (!fs2.existsSync(imagePath)) {
+        throw new NotFoundException('Road image not found');
+      }
       const imageStream = fs2.createReadStream(imagePath);
       return imageStream;
     } catch (error) {
