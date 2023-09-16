@@ -148,4 +148,28 @@ export class StreetLightsController {
     );
     imageStream.pipe(res);
   }
+
+  @UseGuards(AuthGuard)
+  @Post('bulk-upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async bulkUpload(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+    const uniqueFileName = `${new Date().getTime()}-${file.originalname}`;
+    const filePath = await this.streetLightsService.saveFileLocally(
+      uniqueFileName,
+      file.buffer,
+    );
+    // Parse CSV and validate data using CreateStreetLightDto
+    const parsedData = await this.streetLightsService.parseCsv(filePath);
+    console.log('parsedData', parsedData);
+    // Process and store the data as needed
+    await this.streetLightsService.processStreetLights(parsedData);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'CSV data uploaded and processed successfully.',
+      data: 'updatedLight',
+    };
+  }
 }
