@@ -67,7 +67,7 @@ export class StreetLightsController {
   async findOne(@Param('id') id: string) {
     let data = null;
     data = await this.streetLightsService.findOne(+id);
-    data.photoUrl = `localhost:3000/street_lights/road-image/${data.id}`;
+    data.photoUrl = `http://localhost:3000/street_lights/road-image/${data.id}`;
     return {
       statusCode: HttpStatus.OK,
       message: 'StreetLight fetched successfully',
