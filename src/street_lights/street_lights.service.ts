@@ -85,12 +85,14 @@ export class StreetLightsService {
         while ((record = parser.read()) !== null) {
           results.push(record);
         }
-        resolve(results);
       });
 
       parser.on('error', function (err) {
         console.error(err.message);
         reject(err);
+      });
+      parser.on('end', function () {
+        resolve(results);
       });
     });
     return results;

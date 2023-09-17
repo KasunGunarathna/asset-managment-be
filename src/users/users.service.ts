@@ -20,7 +20,10 @@ export class UsersService {
     user.name = createUserDto.name;
     user.user_type = createUserDto.user_type;
     user.nic = createUserDto.nic;
-    user.password = simpleEncrypt(createUserDto.password, encryptionKey);
+    user.password = simpleEncrypt(
+      createUserDto.password.toLowerCase(),
+      encryptionKey,
+    );
     user = await this.usersRepository.create(user);
     await this.usersRepository.save(user);
     return user;
