@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateRoadDto } from './dto/create-roads.dto';
 import { UpdateRoadDto } from './dto/update-roads.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -112,6 +116,36 @@ export class RoadsService {
       return await this.roadsRepository.insert(roadsToSave);
     } catch (error) {
       throw new BadRequestException(error.message);
+    }
+  }
+
+  async updateImage(
+    id: number,
+    imageUrl: string,
+    photo: any,
+  ): Promise<RoadEntity> {
+    const light = await this.roadsRepository.findOne({
+      where: { id: id },
+    });
+    if (!light) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    if (photo == 1) light.starting_point_photo = imageUrl;
+    if (photo == 2) light.end_point_photo = imageUrl;
+    await this.roadsRepository.update({ id }, light);
+
+    return light;
+  }
+
+  async readProfileImage(imagePath: string): Promise<fs2.ReadStream> {
+    try {
+      if (!fs2.existsSync(imagePath)) {
+        throw new NotFoundException('Light image not found');
+      }
+      const imageStream = fs2.createReadStream(imagePath);
+      return imageStream;
+    } catch (error) {
+      throw new NotFoundException('Light image not found');
     }
   }
 }
