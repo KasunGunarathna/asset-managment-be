@@ -37,7 +37,11 @@ export class StreetLightsController {
   @UseGuards(AuthGuard)
   @Get('/query/:query')
   async findAllBySearch(@Param('query') query: string) {
-    const data = await this.streetLightsService.findAllBySearch(query);
+    let data = [];
+    data = await this.streetLightsService.findAllBySearch(query);
+    data.map((item) => {
+      item.photoUrl = `http://localhost:3000/street_lights/road-image/${item.id}`;
+    });
     return {
       statusCode: HttpStatus.OK,
       message: 'Users fetched successfully',
@@ -47,7 +51,11 @@ export class StreetLightsController {
   @UseGuards(AuthGuard)
   @Get('/')
   async findAll() {
-    const data = await this.streetLightsService.findAll();
+    let data = [];
+    data = await this.streetLightsService.findAll();
+    data.map((item) => {
+      item.photoUrl = `http://localhost:3000/street_lights/road-image/${item.id}`;
+    });
     return {
       statusCode: HttpStatus.OK,
       message: 'StreetLight fetched successfully',
@@ -57,7 +65,9 @@ export class StreetLightsController {
   @UseGuards(AuthGuard)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
-    const data = await this.streetLightsService.findOne(+id);
+    let data = null;
+    data = await this.streetLightsService.findOne(+id);
+    data.photoUrl = `http://localhost:3000/street_lights/road-image/${data.id}`;
     return {
       statusCode: HttpStatus.OK,
       message: 'StreetLight fetched successfully',
@@ -132,13 +142,34 @@ export class StreetLightsController {
   ): Promise<void> {
     const light = await this.streetLightsService.findOne(id);
 
-    if (!light || !light.photo) {
-      throw new NotFoundException(`Road with ID ${id} or Road image not found`);
-    }
     res.setHeader('Content-Type', 'image/jpeg');
     const imageStream = await this.streetLightsService.readProfileImage(
       light.photo,
     );
     imageStream.pipe(res);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('bulk-upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async bulkUpload(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+    const uniqueFileName = `${new Date().getTime()}-${file.originalname}`;
+    const filePath = await this.streetLightsService.saveFileLocally(
+      uniqueFileName,
+      file.buffer,
+    );
+    // Parse CSV and validate data using CreateStreetLightDto
+    const parsedData = await this.streetLightsService.parseCsv(filePath);
+    console.log('parsedData', parsedData);
+    // Process and store the data as needed
+    await this.streetLightsService.processStreetLights(parsedData);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'CSV data uploaded and processed successfully.',
+      data: 'updatedLight',
+    };
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateStreetLightDto } from './dto/create-street_lights.dto';
 import { UpdateStreetLightDto } from './dto/update-street_lights.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,12 +10,16 @@ import { StreetLightEntity } from './entities/street_lights.entity';
 import { Repository } from 'typeorm';
 import * as fs from 'fs/promises';
 import * as fs2 from 'fs';
+import { CsvParser } from 'nest-csv-parser';
+import { parse } from 'csv-parse';
+
 
 @Injectable()
 export class StreetLightsService {
   constructor(
     @InjectRepository(StreetLightEntity)
     private streetLightsRepository: Repository<StreetLightEntity>,
+    private readonly csvParser: CsvParser,
   ) {}
   async create(createStreetLightDto: CreateStreetLightDto) {
     const light = await this.streetLightsRepository.save(createStreetLightDto);
@@ -37,7 +45,7 @@ export class StreetLightsService {
   }
 
   async findAllBySearch(query: string): Promise<StreetLightEntity[]> {
-    return this.streetLightsRepository
+    return await this.streetLightsRepository
       .createQueryBuilder('street_lights')
       .where(
         'street_lights.road_name LIKE :query OR street_lights.pole_number LIKE :query',
@@ -61,6 +69,36 @@ export class StreetLightsService {
     return light;
   }
 
+  async parseCsv(filePath: string): Promise<any[]> {
+    const results: CreateStreetLightDto[] = [];
+
+    await new Promise<CreateStreetLightDto[]>((resolve, reject) => {
+      const parser = parse({
+        delimiter: ',',
+        columns: true, // Treat the first row as column headers
+        skip_empty_lines: true,
+      });
+
+      const readStream = fs2.createReadStream(filePath);
+
+      readStream.pipe(parser);
+
+      parser.on('readable', () => {
+        let record;
+        while ((record = parser.read()) !== null) {
+          results.push(record);
+        }
+        resolve(results);
+      });
+
+      parser.on('error', function (err) {
+        console.error(err.message);
+        reject(err);
+      });
+    });
+    return results;
+  }
+
   async saveFileLocally(
     uniqueFileName: string,
     fileBuffer: Buffer,
@@ -71,8 +109,31 @@ export class StreetLightsService {
     return filePath;
   }
 
+  async processStreetLights(data: CreateStreetLightDto[]) {
+    const streetLightsToSave = data.map((streetLightDto) => {
+      const streetLight = new CreateStreetLightDto();
+      streetLight.pole_number = streetLightDto.pole_number;
+      streetLight.road_name = streetLightDto.road_name;
+      streetLight.wire_condition = streetLightDto.wire_condition;
+      streetLight.switch_condition = streetLightDto.switch_condition;
+      streetLight.pole_type = streetLightDto.pole_type;
+      streetLight.lamp_type = streetLightDto.lamp_type;
+      return streetLight;
+    });
+
+    try {
+      // Use TypeORM repository to insert the records in bulk
+      await this.streetLightsRepository.insert(streetLightsToSave);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
   async readProfileImage(imagePath: string): Promise<fs2.ReadStream> {
     try {
+      if (!fs2.existsSync(imagePath)) {
+        throw new NotFoundException('Road image not found');
+      }
       const imageStream = fs2.createReadStream(imagePath);
       return imageStream;
     } catch (error) {

@@ -32,4 +32,6 @@ export class CreateStreetLightDto {
   lamp_type: LampType;
 
   photo: string;
+
+  photoUrl?: string;
 }
