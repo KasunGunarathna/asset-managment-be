@@ -10,16 +10,13 @@ import { StreetLightEntity } from './entities/street_lights.entity';
 import { Repository } from 'typeorm';
 import * as fs from 'fs/promises';
 import * as fs2 from 'fs';
-import { CsvParser } from 'nest-csv-parser';
 import { parse } from 'csv-parse';
-
 
 @Injectable()
 export class StreetLightsService {
   constructor(
     @InjectRepository(StreetLightEntity)
     private streetLightsRepository: Repository<StreetLightEntity>,
-    private readonly csvParser: CsvParser,
   ) {}
   async create(createStreetLightDto: CreateStreetLightDto) {
     const light = await this.streetLightsRepository.save(createStreetLightDto);
