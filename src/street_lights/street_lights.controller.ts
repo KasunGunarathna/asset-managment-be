@@ -164,7 +164,7 @@ export class StreetLightsController {
     // Parse CSV and validate data using CreateStreetLightDto
     const parsedData = await this.streetLightsService.parseCsv(filePath);
     // Process and store the data as needed
-    await this.streetLightsService.processStreetLights(parsedData);
+    await this.streetLightsService.processStreetLights(parsedData, filePath);
     return {
       statusCode: HttpStatus.OK,
       message: 'CSV data uploaded and processed successfully.',

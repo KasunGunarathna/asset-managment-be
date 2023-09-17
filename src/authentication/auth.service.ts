@@ -14,7 +14,11 @@ export class AuthService {
   async login(nic: string, pass: string) {
     simpleEncrypt(pass, encryptionKey);
     const user = await this.userService.findByNic(nic);
-    if (user && simpleDecrypt(pass, encryptionKey) === user.password) {
+    if (
+      user &&
+      simpleDecrypt(pass, encryptionKey).toLowerCase() ===
+        user.password.toLowerCase()
+    ) {
       const payload = { sub: user.id, username: user.name };
       const expiresIn = 3600;
       return {

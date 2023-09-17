@@ -8,11 +8,15 @@ import {
   Delete,
   HttpStatus,
   UseGuards,
+  UploadedFile,
+  UseInterceptors,
+  BadRequestException,
 } from '@nestjs/common';
 import { RoadsService } from './roads.service';
 import { CreateRoadDto } from './dto/create-roads.dto';
 import { UpdateRoadDto } from './dto/update-roads.dto';
 import { AuthGuard } from 'src/authentication/auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('roads')
 export class RoadsController {
@@ -77,6 +81,29 @@ export class RoadsController {
       statusCode: HttpStatus.OK,
       message: 'Road deleted successfully',
       data: data,
+    };
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('bulk-upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async bulkUpload(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+    const uniqueFileName = `${new Date().getTime()}-${file.originalname}`;
+    const filePath = await this.roadsService.saveFileLocally(
+      uniqueFileName,
+      file.buffer,
+    );
+    // Parse CSV and validate data using CreateStreetLightDto
+    const parsedData = await this.roadsService.parseCsv(filePath);
+    // Process and store the data as needed
+    await this.roadsService.processBridges(parsedData, filePath);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'CSV data uploaded and processed successfully.',
+      data: 'updatedLight',
     };
   }
 }

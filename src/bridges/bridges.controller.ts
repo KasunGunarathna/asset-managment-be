@@ -8,11 +8,15 @@ import {
   Delete,
   HttpStatus,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { BridgesService } from './bridges.service';
 import { CreateBridgeDto } from './dto/create-bridge.dto';
 import { UpdateBridgeDto } from './dto/update-bridge.dto';
 import { AuthGuard } from 'src/authentication/auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('bridges')
 export class BridgesController {
@@ -80,6 +84,29 @@ export class BridgesController {
       statusCode: HttpStatus.OK,
       message: 'Bridge deleted successfully',
       data: data,
+    };
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('bulk-upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async bulkUpload(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+    const uniqueFileName = `${new Date().getTime()}-${file.originalname}`;
+    const filePath = await this.bridgesService.saveFileLocally(
+      uniqueFileName,
+      file.buffer,
+    );
+    // Parse CSV and validate data using CreateStreetLightDto
+    const parsedData = await this.bridgesService.parseCsv(filePath);
+    // Process and store the data as needed
+    await this.bridgesService.processBridges(parsedData, filePath);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'CSV data uploaded and processed successfully.',
+      data: 'updatedLight',
     };
   }
 }
