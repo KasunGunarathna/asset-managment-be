@@ -12,8 +12,7 @@ export class AuthService {
   ) {}
 
   async login(nic: string, pass: string) {
-    const res = simpleEncrypt(pass, encryptionKey);
-    console.log(res);
+    simpleEncrypt(pass, encryptionKey);
     const user = await this.userService.findByNic(nic);
     if (user && simpleDecrypt(pass, encryptionKey) === user.password) {
       const payload = { sub: user.id, username: user.name };

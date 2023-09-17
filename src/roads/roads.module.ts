@@ -8,6 +8,6 @@ import { RoadEntity } from './entities/roads.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([RoadEntity])],
   controllers: [RoadsController],
-  providers: [JwtService,RoadsService],
+  providers: [JwtService, RoadsService],
 })
 export class RoadsModule {}

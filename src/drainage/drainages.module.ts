@@ -8,6 +8,6 @@ import { DrainageEntity } from './entities/drainages.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([DrainageEntity])],
   controllers: [DrainagesController],
-  providers: [JwtService,DrainagesService],
+  providers: [JwtService, DrainagesService],
 })
 export class DrainagesModule {}
