@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRoadDto } from './dto/create-roads.dto';
 import { UpdateRoadDto } from './dto/update-roads.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoadEntity } from './entities/roads.entity';
 import { Repository } from 'typeorm';
-
+import * as fs from 'fs/promises';
+import * as fs2 from 'fs';
+import { parse } from 'csv-parse';
 @Injectable()
 export class RoadsService {
   constructor(
@@ -42,5 +44,72 @@ export class RoadsService {
         query: `%${query}%`,
       })
       .getMany();
+  }
+
+  async parseCsv(filePath: string): Promise<any[]> {
+    const results: CreateRoadDto[] = [];
+
+    await new Promise<CreateRoadDto[]>((resolve, reject) => {
+      const parser = parse({
+        delimiter: ',',
+        columns: true, // Treat the first row as column headers
+        skip_empty_lines: true,
+      });
+
+      const readStream = fs2.createReadStream(filePath);
+
+      readStream.pipe(parser);
+
+      parser.on('readable', () => {
+        let record;
+        while ((record = parser.read()) !== null) {
+          results.push(record);
+        }
+        resolve(results);
+      });
+
+      parser.on('error', function (err) {
+        console.error(err.message);
+        reject(err);
+      });
+    });
+    return results;
+  }
+
+  async saveFileLocally(
+    uniqueFileName: string,
+    fileBuffer: Buffer,
+  ): Promise<string> {
+    const uploadDirectory = './uploads';
+    const filePath = `${uploadDirectory}/${uniqueFileName}`;
+    await fs.writeFile(filePath, fileBuffer);
+    return filePath;
+  }
+
+  async processBridges(data: CreateRoadDto[], filePath: any) {
+    const roadsToSave: CreateRoadDto[] = data.map((roadDto) => {
+      const road = new CreateRoadDto();
+      road.road_name = roadDto.road_name;
+      road.length = roadDto.length;
+      road.width = roadDto.width;
+      road.gazetted_detail = roadDto.gazetted_detail;
+      road.survey_plan = roadDto.survey_plan;
+      road.surface_condition = roadDto.surface_condition;
+      road.pavement_type = roadDto.pavement_type;
+      road.starting_point_latitude = roadDto.starting_point_latitude;
+      road.starting_point_longitude = roadDto.starting_point_longitude;
+      road.end_point_latitude = roadDto.end_point_latitude;
+      road.end_point_longitude = roadDto.end_point_longitude;
+      road.drainage_availability = roadDto.drainage_availability;
+      return road;
+    });
+
+    try {
+      fs2.unlinkSync(filePath);
+      // Use TypeORM repository to insert the records in bulk
+      return await this.roadsRepository.insert(roadsToSave);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

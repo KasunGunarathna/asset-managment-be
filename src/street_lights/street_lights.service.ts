@@ -106,7 +106,7 @@ export class StreetLightsService {
     return filePath;
   }
 
-  async processStreetLights(data: CreateStreetLightDto[]) {
+  async processStreetLights(data: CreateStreetLightDto[], filePath: any) {
     const streetLightsToSave = data.map((streetLightDto) => {
       const streetLight = new CreateStreetLightDto();
       streetLight.pole_number = streetLightDto.pole_number;
@@ -119,8 +119,9 @@ export class StreetLightsService {
     });
 
     try {
+      fs2.unlinkSync(filePath);
       // Use TypeORM repository to insert the records in bulk
-      await this.streetLightsRepository.insert(streetLightsToSave);
+      return await this.streetLightsRepository.insert(streetLightsToSave);
     } catch (error) {
       throw new BadRequestException(error.message);
     }

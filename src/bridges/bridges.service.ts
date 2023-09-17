@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateBridgeDto } from './dto/create-bridge.dto';
 import { UpdateBridgeDto } from './dto/update-bridge.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BridgesEntity } from './entities/bridge.entity';
 import { Repository } from 'typeorm';
+import * as fs from 'fs/promises';
+import * as fs2 from 'fs';
+import { parse } from 'csv-parse';
 
 @Injectable()
 export class BridgesService {
@@ -45,5 +48,72 @@ export class BridgesService {
         },
       )
       .getMany();
+  }
+
+  async parseCsv(filePath: string): Promise<any[]> {
+    const results: CreateBridgeDto[] = [];
+
+    await new Promise((resolve, reject) => {
+      const parser = parse({
+        delimiter: ',',
+        columns: true, // Treat the first row as column headers
+        skip_empty_lines: true,
+      });
+
+      const readStream = fs2.createReadStream(filePath);
+
+      readStream.pipe(parser);
+
+      parser.on('readable', () => {
+        let record;
+        while ((record = parser.read()) !== null) {
+          results.push(record);
+        }
+      });
+
+      parser.on('error', function (err) {
+        console.error(err.message);
+        reject(err);
+      });
+
+      parser.on('end', function () {
+        resolve(results);
+      });
+    });
+    return results;
+  }
+
+  async saveFileLocally(
+    uniqueFileName: string,
+    fileBuffer: Buffer,
+  ): Promise<string> {
+    const uploadDirectory = './uploads';
+    const filePath = `${uploadDirectory}/${uniqueFileName}`;
+    await fs.writeFile(filePath, fileBuffer);
+    return filePath;
+  }
+
+  async processBridges(data: CreateBridgeDto[], filePath: any) {
+    const bridgesToSave: CreateBridgeDto[] = data.map((bridgeDto) => {
+      const bridge = new CreateBridgeDto();
+      bridge.bridge_name = bridgeDto.bridge_name;
+      bridge.road_name = bridgeDto.road_name;
+      bridge.latitude = bridgeDto.latitude;
+      bridge.longitude = bridgeDto.longitude;
+      bridge.length = bridgeDto.length;
+      bridge.width = bridgeDto.width;
+      bridge.structure_condition = bridgeDto.structure_condition;
+      bridge.road_surface_condition = bridgeDto.road_surface_condition;
+      bridge.remarks = bridgeDto.remarks;
+      return bridge;
+    });
+
+    try {
+      fs2.unlinkSync(filePath);
+      // Use TypeORM repository to insert the records in bulk
+      return await this.bridgesRepository.save(bridgesToSave);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }
