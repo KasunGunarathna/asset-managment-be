@@ -40,7 +40,7 @@ export class StreetLightsController {
     let data = [];
     data = await this.streetLightsService.findAllBySearch(query);
     data.map((item) => {
-      item.photoUrl = `http://localhost:3000/street_lights/road-image/${item.id}`;
+      item.photoUrl = `http://localhost:3000/street_lights/light_image/${item.id}`;
     });
     return {
       statusCode: HttpStatus.OK,
@@ -54,7 +54,7 @@ export class StreetLightsController {
     let data = [];
     data = await this.streetLightsService.findAll();
     data.map((item) => {
-      item.photoUrl = `http://localhost:3000/street_lights/road-image/${item.id}`;
+      item.photoUrl = `http://localhost:3000/street_lights/light_image/${item.id}`;
     });
     return {
       statusCode: HttpStatus.OK,
@@ -67,7 +67,7 @@ export class StreetLightsController {
   async findOne(@Param('id') id: string) {
     let data = null;
     data = await this.streetLightsService.findOne(+id);
-    data.photoUrl = `http://localhost:3000/street_lights/road-image/${data.id}`;
+    data.photoUrl = `http://localhost:3000/street_lights/light_image/${data.id}`;
     return {
       statusCode: HttpStatus.OK,
       message: 'StreetLight fetched successfully',
@@ -101,7 +101,7 @@ export class StreetLightsController {
     };
   }
   @UseGuards(AuthGuard)
-  @Post('upload-road-image/:id')
+  @Post('upload_light_image/:id')
   @UseInterceptors(FileInterceptor('file'))
   async upload(
     @Param('id') id: string,
@@ -135,7 +135,7 @@ export class StreetLightsController {
     };
   }
 
-  @Get('road-image/:id')
+  @Get('light_image/:id')
   async getProfileImage(
     @Param('id') id: number,
     @Res() res: Response,

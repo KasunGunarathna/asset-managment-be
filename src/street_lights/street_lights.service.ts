@@ -132,12 +132,12 @@ export class StreetLightsService {
   async readProfileImage(imagePath: string): Promise<fs2.ReadStream> {
     try {
       if (!fs2.existsSync(imagePath)) {
-        throw new NotFoundException('Road image not found');
+        throw new NotFoundException('Light image not found');
       }
       const imageStream = fs2.createReadStream(imagePath);
       return imageStream;
     } catch (error) {
-      throw new NotFoundException('Road image not found');
+      throw new NotFoundException('Light image not found');
     }
   }
 }

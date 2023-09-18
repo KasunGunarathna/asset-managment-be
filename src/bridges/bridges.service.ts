@@ -15,9 +15,7 @@ export class BridgesService {
     private bridgesRepository: Repository<BridgesEntity>,
   ) {}
   async create(createBridgeDto: CreateBridgeDto) {
-    const user = await this.bridgesRepository.create(createBridgeDto);
-    await this.bridgesRepository.save(createBridgeDto);
-    return user;
+    return await this.bridgesRepository.save(createBridgeDto);
   }
 
   async findAll() {
