@@ -18,9 +18,7 @@ export class RoadsService {
     private roadsRepository: Repository<RoadEntity>,
   ) {}
   async create(createRoadDto: CreateRoadDto) {
-    const user = await this.roadsRepository.create(createRoadDto);
-    await this.roadsRepository.save(createRoadDto);
-    return user;
+    return await this.roadsRepository.save(createRoadDto);
   }
 
   async findAll() {

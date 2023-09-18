@@ -15,9 +15,7 @@ export class DrainagesService {
     private drainagesRepository: Repository<DrainageEntity>,
   ) {}
   async create(createDrainageDto: CreateDrainageDto) {
-    const user = await this.drainagesRepository.create(createDrainageDto);
-    await this.drainagesRepository.save(createDrainageDto);
-    return user;
+    return await this.drainagesRepository.save(createDrainageDto);
   }
 
   async findAll() {

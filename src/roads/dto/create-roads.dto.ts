@@ -52,7 +52,6 @@ export class CreateRoadDto {
   @IsNumber()
   starting_point_longitude: number;
 
-  @IsString()
   starting_point_photo: string;
 
   @IsNumber()
@@ -61,7 +60,6 @@ export class CreateRoadDto {
   @IsNumber()
   end_point_longitude: number;
 
-  @IsString()
   end_point_photo: string;
 
   @IsEnum(DrainageAvailability)

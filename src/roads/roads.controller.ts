@@ -41,8 +41,8 @@ export class RoadsController {
     let data = [];
     data = await this.roadsService.findAll();
     data.map((item) => {
-      item.startingPhotoUrl = `http://localhost:3000/street_lights/road-image/${item.id}?photo=1`;
-      item.endPhotoUrl = `http://localhost:3000/street_lights/road-image/${item.id}?photo=2`;
+      item.startingPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=1`;
+      item.endPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=2`;
     });
     return {
       statusCode: HttpStatus.OK,
@@ -57,8 +57,8 @@ export class RoadsController {
     let data = [];
     data = await this.roadsService.findAllBySearch(query);
     data.map((item) => {
-      item.startingPhotoUrl = `http://localhost:3000/street_lights/road-image/${item.id}?photo=1`;
-      item.endPhotoUrl = `http://localhost:3000/street_lights/road-image/${item.id}?photo=2`;
+      item.startingPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=1`;
+      item.endPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=2`;
     });
     return {
       statusCode: HttpStatus.OK,
@@ -72,7 +72,8 @@ export class RoadsController {
   async findOne(@Param('id') id: string) {
     let data = null;
     data = await this.roadsService.findOne(+id);
-    data.photoUrl = `http://localhost:3000/street_lights/light_image/${data.id}`;
+    data.startingPhotoUrl = `http://localhost:3000/roads/road_image/${data.id}?photo=1`;
+    data.endPhotoUrl = `http://localhost:3000/roads/road_image/${data.id}?photo=2`;
     return {
       statusCode: HttpStatus.OK,
       message: 'Road fetched successfully',

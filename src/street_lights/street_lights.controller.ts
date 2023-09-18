@@ -40,7 +40,7 @@ export class StreetLightsController {
     let data = [];
     data = await this.streetLightsService.findAllBySearch(query);
     data.map((item) => {
-      item.photoUrl = `http://localhost:3000/street_lights/road-image/${item.id}`;
+      item.photoUrl = `http://localhost:3000/street_lights/light_image/${item.id}`;
     });
     return {
       statusCode: HttpStatus.OK,
