@@ -20,7 +20,6 @@ import { CreateStreetLightDto } from './dto/create-street_lights.dto';
 import { UpdateStreetLightDto } from './dto/update-street_lights.dto';
 import { AuthGuard } from 'src/authentication/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as moment from 'moment';
 
 @Controller('street_lights')
 export class StreetLightsController {
