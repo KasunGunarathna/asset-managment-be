@@ -39,15 +39,26 @@ export class BridgesService {
     return { deleted: true };
   }
 
-  async findAllBySearch(query: string): Promise<BridgesEntity[]> {
+  async findAllBySearch(
+    search: string,
+    f1name: string,
+    f1value: string,
+    f2name: string,
+    f2value: string,
+  ): Promise<BridgesEntity[]> {
+    let where = '';
+    let searchQuery = '';
+    if (f1value) where = ` bridges.${f1name}='${f1value}'`;
+    if (f2value) where = ` bridges.${f2name}='${f2value}'`;
+    if (f1value && f2value)
+      where = ` (bridges.${f1name}='${f1value}' AND bridges.${f2name}='${f2value}')`;
+    if (search)
+      searchQuery = `bridges.bridge_name LIKE '%${search}%' OR bridges.road_name LIKE '%${search}%'`;
+    if (search && (f1value || f2value))
+      searchQuery = `(bridges.bridge_name LIKE '%${search}%' OR bridges.road_name LIKE '%${search}%') AND`;
     return this.bridgesRepository
       .createQueryBuilder('bridges')
-      .where(
-        'bridges.bridge_name LIKE :query OR bridges.road_name LIKE :query',
-        {
-          query: `%${query}%`,
-        },
-      )
+      .where(`${searchQuery} ${where}`)
       .getMany();
   }
 

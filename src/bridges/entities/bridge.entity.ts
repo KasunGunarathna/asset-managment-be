@@ -6,6 +6,14 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+enum Condition {
+  Excellent = 'Excellent',
+  Good = 'Good',
+  Average = 'Average',
+  Poor = 'Poor',
+  VeryPoor = 'Very poor',
+}
+
 @Entity('bridges')
 export class BridgesEntity {
   @PrimaryGeneratedColumn()
@@ -26,10 +34,10 @@ export class BridgesEntity {
   @Column('float', { precision: 8, scale: 2 })
   width: number;
 
-  @Column()
+  @Column({ type: 'enum', enum: Condition })
   structure_condition: string;
 
-  @Column()
+  @Column({ type: 'enum', enum: Condition })
   road_surface_condition: string;
 
   @Column()

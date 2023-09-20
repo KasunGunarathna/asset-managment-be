@@ -1,4 +1,12 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
+
+enum Condition {
+  Excellent = 'Excellent',
+  Good = 'Good',
+  Average = 'Average',
+  Poor = 'Poor',
+  VeryPoor = 'Very poor',
+}
 
 export class CreateBridgeDto {
   @IsString()
@@ -16,10 +24,10 @@ export class CreateBridgeDto {
   @IsNumber()
   width: number;
 
-  @IsString()
+  @IsEnum(Condition)
   structure_condition: string;
 
-  @IsString()
+  @IsEnum(Condition)
   road_surface_condition: string;
 
   @IsString()
