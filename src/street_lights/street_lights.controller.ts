@@ -20,6 +20,7 @@ import { CreateStreetLightDto } from './dto/create-street_lights.dto';
 import { UpdateStreetLightDto } from './dto/update-street_lights.dto';
 import { AuthGuard } from 'src/authentication/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import * as moment from 'moment';
 
 @Controller('street_lights')
 export class StreetLightsController {
@@ -41,6 +42,7 @@ export class StreetLightsController {
     data = await this.streetLightsService.findAllBySearch(query);
     data.map((item) => {
       item.photoUrl = `http://localhost:3000/street_lights/light_image/${item.id}`;
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
       statusCode: HttpStatus.OK,
@@ -55,6 +57,7 @@ export class StreetLightsController {
     data = await this.streetLightsService.findAll();
     data.map((item) => {
       item.photoUrl = `http://localhost:3000/street_lights/light_image/${item.id}`;
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
       statusCode: HttpStatus.OK,

@@ -43,6 +43,7 @@ export class RoadsController {
     data.map((item) => {
       item.startingPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=1`;
       item.endPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=2`;
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
       statusCode: HttpStatus.OK,
@@ -59,6 +60,7 @@ export class RoadsController {
     data.map((item) => {
       item.startingPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=1`;
       item.endPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=2`;
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
       statusCode: HttpStatus.OK,

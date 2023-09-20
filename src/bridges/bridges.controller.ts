@@ -34,7 +34,11 @@ export class BridgesController {
   @UseGuards(AuthGuard)
   @Get('/')
   async findAll() {
-    const data = await this.bridgesService.findAll();
+    let data = [];
+    data = await this.bridgesService.findAll();
+    data.map((item) => {
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
+    });
     return {
       statusCode: HttpStatus.OK,
       message: 'Bridge fetched successfully',
@@ -45,7 +49,11 @@ export class BridgesController {
   @UseGuards(AuthGuard)
   @Get('/query/:query')
   async findAllBySearch(@Param('query') query: string) {
-    const data = await this.bridgesService.findAllBySearch(query);
+    let data = [];
+    data = await this.bridgesService.findAllBySearch(query);
+    data.map((item) => {
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
+    });
     return {
       statusCode: HttpStatus.OK,
       message: 'Users fetched successfully',

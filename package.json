@@ -37,6 +37,7 @@
     "cryptr": "^6.3.0",
     "csv-parse": "^5.5.0",
     "csv-parser": "^3.0.0",
+    "moment": "^2.29.4",
     "mysql": "^2.18.1",
     "nest-csv-parser": "^2.0.4",
     "papaparse": "^5.4.1",

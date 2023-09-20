@@ -35,7 +35,11 @@ export class DrainagesController {
   @UseGuards(AuthGuard)
   @Get('/query/:query')
   async findAllBySearch(@Param('query') query: string) {
-    const data = await this.drainagesService.findAllBySearch(query);
+    let data = [];
+    data = await this.drainagesService.findAllBySearch(query);
+    data.map((item) => {
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
+    });
     return {
       statusCode: HttpStatus.OK,
       message: 'Users fetched successfully',
@@ -46,7 +50,11 @@ export class DrainagesController {
   @UseGuards(AuthGuard)
   @Get('/')
   async findAll() {
-    const data = await this.drainagesService.findAll();
+    let data = [];
+    data = await this.drainagesService.findAll();
+    data.map((item) => {
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
+    });
     return {
       statusCode: HttpStatus.OK,
       message: 'Drainage fetched successfully',
