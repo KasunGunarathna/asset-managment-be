@@ -7,11 +7,8 @@ export class CreateBridgeDto {
   @IsString()
   road_name: string;
 
-  @IsNumber()
-  latitude: number;
-
-  @IsNumber()
-  longitude: number;
+  @IsString()
+  location: string;
 
   @IsNumber()
   length: number;

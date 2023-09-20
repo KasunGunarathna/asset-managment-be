@@ -100,10 +100,8 @@ export class RoadsService {
       road.survey_plan = roadDto.survey_plan;
       road.surface_condition = roadDto.surface_condition;
       road.pavement_type = roadDto.pavement_type;
-      road.starting_point_latitude = roadDto.starting_point_latitude;
-      road.starting_point_longitude = roadDto.starting_point_longitude;
-      road.end_point_latitude = roadDto.end_point_latitude;
-      road.end_point_longitude = roadDto.end_point_longitude;
+      road.starting_point_location = roadDto.starting_point_location;
+      road.end_point_location = roadDto.end_point_location;
       road.drainage_availability = roadDto.drainage_availability;
       return road;
     });

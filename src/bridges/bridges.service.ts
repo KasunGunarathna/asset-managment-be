@@ -96,8 +96,7 @@ export class BridgesService {
       const bridge = new CreateBridgeDto();
       bridge.bridge_name = bridgeDto.bridge_name;
       bridge.road_name = bridgeDto.road_name;
-      bridge.latitude = bridgeDto.latitude;
-      bridge.longitude = bridgeDto.longitude;
+      bridge.location = bridgeDto.location;
       bridge.length = bridgeDto.length;
       bridge.width = bridgeDto.width;
       bridge.structure_condition = bridgeDto.structure_condition;

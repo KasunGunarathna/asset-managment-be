@@ -46,19 +46,13 @@ export class CreateRoadDto {
   @IsEnum(PavementType)
   pavement_type: PavementType;
 
-  @IsNumber()
-  starting_point_latitude: number;
-
-  @IsNumber()
-  starting_point_longitude: number;
+  @IsString()
+  starting_point_location: string;
 
   starting_point_photo: string;
 
-  @IsNumber()
-  end_point_latitude: number;
-
-  @IsNumber()
-  end_point_longitude: number;
+  @IsString()
+  end_point_location: string;
 
   end_point_photo: string;
 

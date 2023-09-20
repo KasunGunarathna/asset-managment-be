@@ -32,17 +32,11 @@ export class DrainageEntity {
   @Column({ type: 'enum', enum: DrainageSide })
   side_of_drain: DrainageSide;
 
-  @Column('float', { precision: 10, scale: 6 })
-  starting_point_latitude: number;
+  @Column()
+  starting_point_location: string;
 
-  @Column('float', { precision: 10, scale: 6 })
-  starting_point_longitude: number;
-
-  @Column('float', { precision: 10, scale: 6 })
-  end_point_latitude: number;
-
-  @Column('float', { precision: 10, scale: 6 })
-  end_point_longitude: number;
+  @Column()
+  end_point_location: string;
 
   @Column()
   condition: string;

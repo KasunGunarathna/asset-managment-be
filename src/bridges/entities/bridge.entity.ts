@@ -17,11 +17,8 @@ export class BridgesEntity {
   @Column()
   road_name: string;
 
-  @Column('float', { precision: 10, scale: 6 })
-  latitude: number;
-
-  @Column('float', { precision: 10, scale: 6 })
-  longitude: number;
+  @Column()
+  location: string;
 
   @Column('float', { precision: 10, scale: 2 })
   length: number;

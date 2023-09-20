@@ -93,10 +93,8 @@ export class DrainagesService {
       drainage.road_name = drainageDto.road_name;
       drainage.drainage_type = drainageDto.drainage_type;
       drainage.side_of_drain = drainageDto.side_of_drain;
-      drainage.starting_point_latitude = drainageDto.starting_point_latitude;
-      drainage.starting_point_longitude = drainageDto.starting_point_longitude;
-      drainage.end_point_latitude = drainageDto.end_point_latitude;
-      drainage.end_point_longitude = drainageDto.end_point_longitude;
+      drainage.starting_point_location = drainageDto.starting_point_location;
+      drainage.end_point_location = drainageDto.end_point_location;
       drainage.condition = drainageDto.condition;
       drainage.length = drainageDto.length;
       drainage.width = drainageDto.width;
