@@ -22,7 +22,10 @@ export class RoadsService {
   }
 
   async findAll() {
-    return await this.roadsRepository.find();
+    return this.roadsRepository
+      .createQueryBuilder('roads')
+      .orderBy('roads.updatedAt', 'DESC')
+      .getMany();
   }
 
   async findOne(id: number) {

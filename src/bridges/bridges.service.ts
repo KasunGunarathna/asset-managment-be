@@ -19,7 +19,10 @@ export class BridgesService {
   }
 
   async findAll() {
-    return await this.bridgesRepository.find();
+    return await this.bridgesRepository
+      .createQueryBuilder('bridges')
+      .orderBy('bridges.updatedAt', 'DESC')
+      .getMany();
   }
 
   async findOne(id: number) {

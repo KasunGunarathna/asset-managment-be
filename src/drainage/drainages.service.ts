@@ -19,7 +19,10 @@ export class DrainagesService {
   }
 
   async findAll() {
-    return await this.drainagesRepository.find();
+    return this.drainagesRepository
+      .createQueryBuilder('drainage')
+      .orderBy('drainage.updatedAt', 'DESC')
+      .getMany();
   }
 
   async findOne(id: number) {

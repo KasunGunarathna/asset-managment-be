@@ -24,7 +24,10 @@ export class StreetLightsService {
   }
 
   async findAll() {
-    return await this.streetLightsRepository.find();
+    return this.streetLightsRepository
+      .createQueryBuilder('street_lights')
+      .orderBy('street_lights.updatedAt', 'DESC')
+      .getMany();
   }
 
   async findOne(id: number) {
