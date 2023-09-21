@@ -24,7 +24,10 @@ export class StreetLightsService {
   }
 
   async findAll() {
-    return await this.streetLightsRepository.find();
+    return this.streetLightsRepository
+      .createQueryBuilder('street_lights')
+      .orderBy('street_lights.updatedAt', 'DESC')
+      .getMany();
   }
 
   async findOne(id: number) {
@@ -41,15 +44,30 @@ export class StreetLightsService {
     return { deleted: true };
   }
 
-  async findAllBySearch(query: string): Promise<StreetLightEntity[]> {
-    return await this.streetLightsRepository
+
+
+  async findAllBySearch(
+    search: string,
+    f1name: string,
+    f1value: string,
+    f2name: string,
+    f2value: string,
+  ): Promise<StreetLightEntity[]> {
+    let where = '';
+    let searchQuery = '';
+    if (f1value) where = ` street_lights.${f1name}='${f1value}'`;
+    if (f2value) where = ` street_lights.${f2name}='${f2value}'`;
+    if (f1value && f2value)
+      where = ` (street_lights.${f1name}='${f1value}' AND street_lights.${f2name}='${f2value}')`;
+    if (search)
+      searchQuery = `street_lights.road_name LIKE '%${search}%' OR street_lights.pole_number LIKE '%${search}%'`;
+    if (search && (f1value || f2value))
+      searchQuery = `(street_lights.road_name LIKE '%${search}%' OR street_lights.pole_number LIKE '%${search}%' AND`;
+    console.log(`${searchQuery} ${where}`);
+    return this.streetLightsRepository
       .createQueryBuilder('street_lights')
-      .where(
-        'street_lights.road_name LIKE :query OR street_lights.pole_number LIKE :query',
-        {
-          query: `%${query}%`,
-        },
-      )
+      .where(`${searchQuery} ${where}`)
+      .orderBy('street_lights.updatedAt', 'DESC')
       .getMany();
   }
 

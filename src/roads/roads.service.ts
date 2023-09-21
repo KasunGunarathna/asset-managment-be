@@ -22,7 +22,10 @@ export class RoadsService {
   }
 
   async findAll() {
-    return await this.roadsRepository.find();
+    return this.roadsRepository
+      .createQueryBuilder('roads')
+      .orderBy('roads.updatedAt', 'DESC')
+      .getMany();
   }
 
   async findOne(id: number) {
@@ -39,12 +42,27 @@ export class RoadsService {
     return { deleted: true };
   }
 
-  async findAllBySearch(query: string): Promise<RoadEntity[]> {
+  async findAllBySearch(
+    search: string,
+    f1name: string,
+    f1value: string,
+    f2name: string,
+    f2value: string,
+  ): Promise<RoadEntity[]> {
+    let where = '';
+    let searchQuery = '';
+    if (f1value) where = ` roads.${f1name}='${f1value}'`;
+    if (f2value) where = ` roads.${f2name}='${f2value}'`;
+    if (f1value && f2value)
+      where = ` (roads.${f1name}='${f1value}' AND roads.${f2name}='${f2value}')`;
+    if (search) searchQuery = `roads.road_name LIKE '%${search}%'`;
+    if (search && (f1value || f2value))
+      searchQuery = `(roads.road_name LIKE '%${search}%'  AND`;
+    console.log(`${searchQuery} ${where}`);
     return this.roadsRepository
       .createQueryBuilder('roads')
-      .where('roads.road_name LIKE :query', {
-        query: `%${query}%`,
-      })
+      .where(`${searchQuery} ${where}`)
+      .orderBy('roads.updatedAt', 'DESC')
       .getMany();
   }
 
@@ -100,10 +118,8 @@ export class RoadsService {
       road.survey_plan = roadDto.survey_plan;
       road.surface_condition = roadDto.surface_condition;
       road.pavement_type = roadDto.pavement_type;
-      road.starting_point_latitude = roadDto.starting_point_latitude;
-      road.starting_point_longitude = roadDto.starting_point_longitude;
-      road.end_point_latitude = roadDto.end_point_latitude;
-      road.end_point_longitude = roadDto.end_point_longitude;
+      road.starting_point_location = roadDto.starting_point_location;
+      road.end_point_location = roadDto.end_point_location;
       road.drainage_availability = roadDto.drainage_availability;
       return road;
     });

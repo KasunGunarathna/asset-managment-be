@@ -19,7 +19,10 @@ export class DrainagesService {
   }
 
   async findAll() {
-    return await this.drainagesRepository.find();
+    return this.drainagesRepository
+      .createQueryBuilder('drainage')
+      .orderBy('drainage.updatedAt', 'DESC')
+      .getMany();
   }
 
   async findOne(id: number) {
@@ -36,12 +39,27 @@ export class DrainagesService {
     return { deleted: true };
   }
 
-  async findAllBySearch(query: string): Promise<DrainageEntity[]> {
+  async findAllBySearch(
+    search: string,
+    f1name: string,
+    f1value: string,
+    f2name: string,
+    f2value: string,
+  ): Promise<DrainageEntity[]> {
+    let where = '';
+    let searchQuery = '';
+    if (f1value) where = ` drainage.${f1name}='${f1value}'`;
+    if (f2value) where = ` drainage.${f2name}='${f2value}'`;
+    if (f1value && f2value)
+      where = ` (drainage.${f1name}='${f1value}' AND drainage.${f2name}='${f2value}')`;
+    if (search) searchQuery = `drainage.road_name LIKE '%${search}%'`;
+    if (search && (f1value || f2value))
+      searchQuery = `(drainage.road_name LIKE '%${search}%'  AND`;
+    console.log(`${searchQuery} ${where}`)
     return this.drainagesRepository
       .createQueryBuilder('drainage')
-      .where('drainage.road_name LIKE :query', {
-        query: `%${query}%`,
-      })
+      .where(`${searchQuery} ${where}`)
+      .orderBy('drainage.updatedAt', 'DESC')
       .getMany();
   }
 
@@ -93,10 +111,8 @@ export class DrainagesService {
       drainage.road_name = drainageDto.road_name;
       drainage.drainage_type = drainageDto.drainage_type;
       drainage.side_of_drain = drainageDto.side_of_drain;
-      drainage.starting_point_latitude = drainageDto.starting_point_latitude;
-      drainage.starting_point_longitude = drainageDto.starting_point_longitude;
-      drainage.end_point_latitude = drainageDto.end_point_latitude;
-      drainage.end_point_longitude = drainageDto.end_point_longitude;
+      drainage.starting_point_location = drainageDto.starting_point_location;
+      drainage.end_point_location = drainageDto.end_point_location;
       drainage.condition = drainageDto.condition;
       drainage.length = drainageDto.length;
       drainage.width = drainageDto.width;

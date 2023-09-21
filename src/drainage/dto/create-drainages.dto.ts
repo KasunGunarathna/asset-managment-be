@@ -12,6 +12,14 @@ enum DrainageSide {
   Right = 'Right',
 }
 
+enum Condition {
+  Excellent = 'Excellent',
+  Good = 'Good',
+  Average = 'Average',
+  Poor = 'Poor',
+  VeryPoor = 'Very poor',
+}
+
 export class CreateDrainageDto {
   @IsString()
   road_name: string;
@@ -22,19 +30,13 @@ export class CreateDrainageDto {
   @IsEnum(DrainageSide)
   side_of_drain: DrainageSide;
 
-  @IsNumber()
-  starting_point_latitude: number;
-
-  @IsNumber()
-  starting_point_longitude: number;
-
-  @IsNumber()
-  end_point_latitude: number;
-
-  @IsNumber()
-  end_point_longitude: number;
+  @IsString()
+  starting_point_location: string;
 
   @IsString()
+  end_point_location: string;
+
+  @IsEnum(Condition)
   condition: string;
 
   @IsNumber()

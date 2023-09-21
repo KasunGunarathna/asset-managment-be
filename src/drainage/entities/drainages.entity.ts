@@ -18,6 +18,14 @@ enum DrainageSide {
   Right = 'Right',
 }
 
+enum Condition {
+  Excellent = 'Excellent',
+  Good = 'Good',
+  Average = 'Average',
+  Poor = 'Poor',
+  VeryPoor = 'Very poor',
+}
+
 @Entity('drainage')
 export class DrainageEntity {
   @PrimaryGeneratedColumn()
@@ -32,19 +40,13 @@ export class DrainageEntity {
   @Column({ type: 'enum', enum: DrainageSide })
   side_of_drain: DrainageSide;
 
-  @Column('float', { precision: 10, scale: 6 })
-  starting_point_latitude: number;
-
-  @Column('float', { precision: 10, scale: 6 })
-  starting_point_longitude: number;
-
-  @Column('float', { precision: 10, scale: 6 })
-  end_point_latitude: number;
-
-  @Column('float', { precision: 10, scale: 6 })
-  end_point_longitude: number;
+  @Column()
+  starting_point_location: string;
 
   @Column()
+  end_point_location: string;
+
+  @Column({ type: 'enum', enum: Condition })
   condition: string;
 
   @Column('float', { precision: 10, scale: 2 })

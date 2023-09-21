@@ -13,6 +13,8 @@ import {
   BadRequestException,
   NotFoundException,
   Res,
+  Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { StreetLightsService } from './street_lights.service';
@@ -20,6 +22,7 @@ import { CreateStreetLightDto } from './dto/create-street_lights.dto';
 import { UpdateStreetLightDto } from './dto/update-street_lights.dto';
 import { AuthGuard } from 'src/authentication/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { FilterDto } from './dto/filter.dto';
 
 @Controller('street_lights')
 export class StreetLightsController {
@@ -35,12 +38,25 @@ export class StreetLightsController {
     };
   }
   @UseGuards(AuthGuard)
-  @Get('/query/:query')
-  async findAllBySearch(@Param('query') query: string) {
+  @Get('/query')
+  async findAllBySearch(
+    @Query(new ValidationPipe({ transform: true })) filter: FilterDto,
+  ) {
+    const { search, f1name, f1value, f2name, f2value } = filter;
+
+    console.log('search, f1name, f1value, f2name, f2value');
+    console.log(search, f1name, f1value, f2name, f2value);
     let data = [];
-    data = await this.streetLightsService.findAllBySearch(query);
+    data = await this.streetLightsService.findAllBySearch(
+      search,
+      f1name,
+      f1value,
+      f2name,
+      f2value,
+    );
     data.map((item) => {
       item.photoUrl = `http://localhost:3000/street_lights/light_image/${item.id}`;
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
       statusCode: HttpStatus.OK,
@@ -55,6 +71,7 @@ export class StreetLightsController {
     data = await this.streetLightsService.findAll();
     data.map((item) => {
       item.photoUrl = `http://localhost:3000/street_lights/light_image/${item.id}`;
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
       statusCode: HttpStatus.OK,

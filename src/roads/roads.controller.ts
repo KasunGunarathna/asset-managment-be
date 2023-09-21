@@ -14,6 +14,7 @@ import {
   NotFoundException,
   Res,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { RoadsService } from './roads.service';
@@ -21,6 +22,7 @@ import { CreateRoadDto } from './dto/create-roads.dto';
 import { UpdateRoadDto } from './dto/update-roads.dto';
 import { AuthGuard } from 'src/authentication/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { FilterDto } from './dto/filter.dto';
 
 @Controller('roads')
 export class RoadsController {
@@ -43,6 +45,7 @@ export class RoadsController {
     data.map((item) => {
       item.startingPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=1`;
       item.endPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=2`;
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
       statusCode: HttpStatus.OK,
@@ -52,13 +55,26 @@ export class RoadsController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('/query/:query')
-  async findAllBySearch(@Param('query') query: string) {
+  @Get('/query')
+  async findAllBySearch(
+    @Query(new ValidationPipe({ transform: true })) filter: FilterDto,
+  ) {
+    const { search, f1name, f1value, f2name, f2value } = filter;
+
+    console.log('search, f1name, f1value, f2name, f2value');
+    console.log(search, f1name, f1value, f2name, f2value);
     let data = [];
-    data = await this.roadsService.findAllBySearch(query);
+    data = await this.roadsService.findAllBySearch(
+      search,
+      f1name,
+      f1value,
+      f2name,
+      f2value,
+    );
     data.map((item) => {
       item.startingPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=1`;
       item.endPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=2`;
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
       statusCode: HttpStatus.OK,

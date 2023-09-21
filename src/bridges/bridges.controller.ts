@@ -11,12 +11,15 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { BridgesService } from './bridges.service';
 import { CreateBridgeDto } from './dto/create-bridge.dto';
 import { UpdateBridgeDto } from './dto/update-bridge.dto';
 import { AuthGuard } from 'src/authentication/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { FilterDto } from './dto/filter.dto';
 
 @Controller('bridges')
 export class BridgesController {
@@ -34,7 +37,11 @@ export class BridgesController {
   @UseGuards(AuthGuard)
   @Get('/')
   async findAll() {
-    const data = await this.bridgesService.findAll();
+    let data = [];
+    data = await this.bridgesService.findAll();
+    data.map((item) => {
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
+    });
     return {
       statusCode: HttpStatus.OK,
       message: 'Bridge fetched successfully',
@@ -43,9 +50,24 @@ export class BridgesController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('/query/:query')
-  async findAllBySearch(@Param('query') query: string) {
-    const data = await this.bridgesService.findAllBySearch(query);
+  @Get('/query')
+  async findAllBySearch(
+    @Query(new ValidationPipe({ transform: true })) filter: FilterDto,
+  ) {
+    const { search, f1name, f1value, f2name, f2value } = filter;
+    console.log('search, f1name, f1value, f2name, f2value');
+    console.log(search, f1name, f1value, f2name, f2value);
+    let data = [];
+    data = await this.bridgesService.findAllBySearch(
+      search,
+      f1name,
+      f1value,
+      f2name,
+      f2value,
+    );
+    data.map((item) => {
+      item.updatedAt = new Date(item.updatedAt).toLocaleString();
+    });
     return {
       statusCode: HttpStatus.OK,
       message: 'Users fetched successfully',

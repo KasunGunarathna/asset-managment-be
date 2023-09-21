@@ -19,7 +19,10 @@ export class BridgesService {
   }
 
   async findAll() {
-    return await this.bridgesRepository.find();
+    return await this.bridgesRepository
+      .createQueryBuilder('bridges')
+      .orderBy('bridges.updatedAt', 'DESC')
+      .getMany();
   }
 
   async findOne(id: number) {
@@ -36,16 +39,28 @@ export class BridgesService {
     return { deleted: true };
   }
 
-  async findAllBySearch(query: string): Promise<BridgesEntity[]> {
+  async findAllBySearch(
+    search: string,
+    f1name: string,
+    f1value: string,
+    f2name: string,
+    f2value: string,
+  ): Promise<BridgesEntity[]> {
+    let where = '';
+    let searchQuery = '';
+    if (f1value) where = ` bridges.${f1name}='${f1value}'`;
+    if (f2value) where = ` bridges.${f2name}='${f2value}'`;
+    if (f1value && f2value)
+      where = ` (bridges.${f1name}='${f1value}' AND bridges.${f2name}='${f2value}')`;
+    if (search)
+      searchQuery = `bridges.bridge_name LIKE '%${search}%' OR bridges.road_name LIKE '%${search}%'`;
+    if (search && (f1value || f2value))
+      searchQuery = `(bridges.bridge_name LIKE '%${search}%' OR bridges.road_name LIKE '%${search}%') AND`;
     return this.bridgesRepository
       .createQueryBuilder('bridges')
-      .where(
-        'bridges.bridge_name LIKE :query OR bridges.road_name LIKE :query',
-        {
-          query: `%${query}%`,
-        },
-      )
-      .getMany();
+      .where(`${searchQuery} ${where}`)
+      .orderBy('bridges.updatedAt', 'DESC')
+      .getMany(); 
   }
 
   async parseCsv(filePath: string): Promise<any[]> {
@@ -96,8 +111,7 @@ export class BridgesService {
       const bridge = new CreateBridgeDto();
       bridge.bridge_name = bridgeDto.bridge_name;
       bridge.road_name = bridgeDto.road_name;
-      bridge.latitude = bridgeDto.latitude;
-      bridge.longitude = bridgeDto.longitude;
+      bridge.location = bridgeDto.location;
       bridge.length = bridgeDto.length;
       bridge.width = bridgeDto.width;
       bridge.structure_condition = bridgeDto.structure_condition;
