@@ -39,12 +39,27 @@ export class DrainagesService {
     return { deleted: true };
   }
 
-  async findAllBySearch(query: string): Promise<DrainageEntity[]> {
+  async findAllBySearch(
+    search: string,
+    f1name: string,
+    f1value: string,
+    f2name: string,
+    f2value: string,
+  ): Promise<DrainageEntity[]> {
+    let where = '';
+    let searchQuery = '';
+    if (f1value) where = ` drainage.${f1name}='${f1value}'`;
+    if (f2value) where = ` drainage.${f2name}='${f2value}'`;
+    if (f1value && f2value)
+      where = ` (drainage.${f1name}='${f1value}' AND drainage.${f2name}='${f2value}')`;
+    if (search) searchQuery = `drainage.road_name LIKE '%${search}%'`;
+    if (search && (f1value || f2value))
+      searchQuery = `(drainage.road_name LIKE '%${search}%'  AND`;
+    console.log(`${searchQuery} ${where}`)
     return this.drainagesRepository
       .createQueryBuilder('drainage')
-      .where('drainage.road_name LIKE :query', {
-        query: `%${query}%`,
-      })
+      .where(`${searchQuery} ${where}`)
+      .orderBy('drainage.updatedAt', 'DESC')
       .getMany();
   }
 

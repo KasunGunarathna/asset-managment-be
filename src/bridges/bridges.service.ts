@@ -59,7 +59,8 @@ export class BridgesService {
     return this.bridgesRepository
       .createQueryBuilder('bridges')
       .where(`${searchQuery} ${where}`)
-      .getMany();
+      .orderBy('bridges.updatedAt', 'DESC')
+      .getMany(); 
   }
 
   async parseCsv(filePath: string): Promise<any[]> {
