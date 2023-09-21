@@ -42,12 +42,27 @@ export class RoadsService {
     return { deleted: true };
   }
 
-  async findAllBySearch(query: string): Promise<RoadEntity[]> {
+  async findAllBySearch(
+    search: string,
+    f1name: string,
+    f1value: string,
+    f2name: string,
+    f2value: string,
+  ): Promise<RoadEntity[]> {
+    let where = '';
+    let searchQuery = '';
+    if (f1value) where = ` roads.${f1name}='${f1value}'`;
+    if (f2value) where = ` roads.${f2name}='${f2value}'`;
+    if (f1value && f2value)
+      where = ` (roads.${f1name}='${f1value}' AND roads.${f2name}='${f2value}')`;
+    if (search) searchQuery = `roads.road_name LIKE '%${search}%'`;
+    if (search && (f1value || f2value))
+      searchQuery = `(roads.road_name LIKE '%${search}%'  AND`;
+    console.log(`${searchQuery} ${where}`);
     return this.roadsRepository
       .createQueryBuilder('roads')
-      .where('roads.road_name LIKE :query', {
-        query: `%${query}%`,
-      })
+      .where(`${searchQuery} ${where}`)
+      .orderBy('roads.updatedAt', 'DESC')
       .getMany();
   }
 
