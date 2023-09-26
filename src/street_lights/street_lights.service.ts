@@ -44,8 +44,6 @@ export class StreetLightsService {
     return { deleted: true };
   }
 
-
-
   async findAllBySearch(
     search: string,
     f1name: string,
