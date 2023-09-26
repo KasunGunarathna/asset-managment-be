@@ -18,18 +18,17 @@ export class CreateBuildingDto {
   @IsNumber()
   number_of_stories: number;
 
-  @IsString()
   photo: string;
 
   @IsString()
   location: string;
 
   @IsNumber()
-  builtYear: number;
+  built_year: number;
 
   @IsEnum(BuildingCondition)
   condition: string;
 
   @IsString()
-  remarks: string;
+  remark: string;
 }

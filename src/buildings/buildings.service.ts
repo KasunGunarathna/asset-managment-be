@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBuildingDto } from './dto/create-building.dto';
 import { UpdateBuildingDto } from './dto/update-building.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -107,6 +107,19 @@ export class BuildingsService {
     return filePath;
   }
 
+  async updateImage(id: number, imageUrl: string): Promise<BuildingsEntity> {
+    const light = await this.buildingsRepository.findOne({
+      where: { id: id },
+    });
+    if (!light) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    light.photo = imageUrl;
+    await this.buildingsRepository.update({ id }, light);
+
+    return light;
+  }
+
   async processBuildings(data: CreateBuildingDto[], filePath: any) {
     const buildingsToSave: CreateBuildingDto[] = data.map((buildingDto) => {
       const building = new CreateBuildingDto();
@@ -115,9 +128,9 @@ export class BuildingsService {
       building.number_of_stories = buildingDto.number_of_stories;
       building.photo = buildingDto.photo;
       building.location = buildingDto.location;
-      building.builtYear = buildingDto.builtYear;
+      building.built_year = buildingDto.built_year;
       building.condition = buildingDto.condition;
-      building.remarks = buildingDto.remarks;
+      building.remark = buildingDto.remark;
       return building;
     });
 
@@ -129,4 +142,19 @@ export class BuildingsService {
       throw new BadRequestException(error.message);
     }
   }
+
+  async readProfileImage(imagePath: string): Promise<fs2.ReadStream> {
+    try {
+      
+      if (!fs2.existsSync(imagePath)) {
+        throw new NotFoundException('Building image not found');
+      }
+      const imageStream = fs2.createReadStream(imagePath);
+      return imageStream;
+    } catch (error) {
+      throw new NotFoundException('Building image not found');
+    }
+  }
+
+  
 }

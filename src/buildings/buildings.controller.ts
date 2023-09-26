@@ -13,7 +13,10 @@ import {
   BadRequestException,
   ValidationPipe,
   Query,
+  NotFoundException,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { BuildingsService } from './buildings.service';
 import { CreateBuildingDto } from './dto/create-building.dto';
 import { UpdateBuildingDto } from './dto/update-building.dto';
@@ -42,6 +45,7 @@ export class BuildingsController {
     let data = [];
     data = await this.buildingsService.findAll();
     data.map((item) => {
+      item.photoUrl = `http://localhost:3000/buildings/building_image/${item.id}`;
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
@@ -68,6 +72,7 @@ export class BuildingsController {
       f2value,
     );
     data.map((item) => {
+      item.photoUrl = `http://localhost:3000/buildings/building_image/${item.id}`;
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
@@ -80,7 +85,9 @@ export class BuildingsController {
   @UseGuards(AuthGuard)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
-    const data = await this.buildingsService.findOne(+id);
+    let data = null;
+    data = await this.buildingsService.findOne(+id);
+    data.photoUrl = `http://localhost:3000/buildings/building_image/${data.id}`;
     return {
       statusCode: HttpStatus.OK,
       message: 'Building fetched successfully',
@@ -111,6 +118,52 @@ export class BuildingsController {
       message: 'Building deleted successfully',
       data: data,
     };
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('upload_building_image/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
+    }
+    if (!file.mimetype.startsWith('image/')) {
+      throw new BadRequestException('Only image files are allowed');
+    }
+
+    const uniqueFileName = `${id}-${new Date().getTime()}-${file.originalname}`;
+    const filePath = await this.buildingsService.saveFileLocally(
+      uniqueFileName,
+      file.buffer,
+    );
+
+    const updatedLight = await this.buildingsService.updateImage(+id, filePath);
+
+    if (!updatedLight) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'StreetLight update successfully',
+      data: updatedLight,
+    };
+  }
+
+  @Get('building_image/:id')
+  async getProfileImage(
+    @Param('id') id: number,
+    @Res() res: Response,
+  ): Promise<void> {
+    const building = await this.buildingsService.findOne(id);
+console.log("sssssssssssssssss")
+    res.setHeader('Content-Type', 'image/jpeg');
+    const imageStream = await this.buildingsService.readProfileImage(
+      building.photo,
+    );
+    imageStream.pipe(res);
   }
 
   @UseGuards(AuthGuard)

@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IsEnum } from 'class-validator';
 
 enum BuildingCondition {
   Excellent = 'Excellent',
@@ -14,7 +15,7 @@ enum BuildingCondition {
   VeryPoor = 'Very poor',
 }
 
-@Entity('buildings') // Replace 'buildings' with the appropriate table name
+@Entity('buildings')
 export class BuildingsEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -25,26 +26,28 @@ export class BuildingsEntity {
   @Column()
   plan: string;
 
+  @Column({ type: 'int' }) // Update the column name
+  number_of_stories: number; // Update the property name
+
+  @Column({ default: null })
+  photo: string;
+
   @Column()
   location: string;
 
-  @Column('float', { precision: 10, scale: 2 })
-  length: number;
-
-  @Column('float', { precision: 8, scale: 2 })
-  width: number;
+  @Column({ type: 'int' }) // Update the column name
+  built_year: number; // Update the property name
 
   @Column({ type: 'enum', enum: BuildingCondition })
+  @IsEnum(BuildingCondition) // Add validation decorator
   condition: string;
 
   @Column()
-  remarks: string;
+  remark: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
-
-  // Additional properties specific to buildings if needed
 }
