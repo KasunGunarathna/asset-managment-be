@@ -60,9 +60,6 @@ export class RoadsController {
     @Query(new ValidationPipe({ transform: true })) filter: FilterDto,
   ) {
     const { search, f1name, f1value, f2name, f2value } = filter;
-
-    console.log('search, f1name, f1value, f2name, f2value');
-    console.log(search, f1name, f1value, f2name, f2value);
     let data = [];
     data = await this.roadsService.findAllBySearch(
       search,
@@ -148,7 +145,6 @@ export class RoadsController {
     @Query() query: any,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(id, query?.photo);
     const photo = query?.photo;
     if (photo > 2 || photo < 1) {
       throw new BadRequestException('Out of Range photo');
@@ -188,7 +184,6 @@ export class RoadsController {
     @Query() query: any,
     @Res() res: Response,
   ): Promise<void> {
-    console.log(id, query?.photo);
     const photo = query?.photo;
     if (photo > 2 || photo < 1) {
       throw new BadRequestException('Out of Range photo');

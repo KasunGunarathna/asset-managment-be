@@ -55,7 +55,6 @@ export class DrainagesService {
     if (search) searchQuery = `drainage.road_name LIKE '%${search}%'`;
     if (search && (f1value || f2value))
       searchQuery = `(drainage.road_name LIKE '%${search}%'  AND`;
-    console.log(`${searchQuery} ${where}`)
     return this.drainagesRepository
       .createQueryBuilder('drainage')
       .where(`${searchQuery} ${where}`)
@@ -85,7 +84,6 @@ export class DrainagesService {
       });
 
       parser.on('error', function (err) {
-        console.error(err.message);
         reject(err);
       });
       parser.on('end', function () {

@@ -61,7 +61,6 @@ export class StreetLightsService {
       searchQuery = `street_lights.road_name LIKE '%${search}%' OR street_lights.pole_number LIKE '%${search}%'`;
     if (search && (f1value || f2value))
       searchQuery = `(street_lights.road_name LIKE '%${search}%' OR street_lights.pole_number LIKE '%${search}%' AND`;
-    console.log(`${searchQuery} ${where}`);
     return this.streetLightsRepository
       .createQueryBuilder('street_lights')
       .where(`${searchQuery} ${where}`)
@@ -104,7 +103,6 @@ export class StreetLightsService {
       });
 
       parser.on('error', function (err) {
-        console.error(err.message);
         reject(err);
       });
       parser.on('end', function () {
