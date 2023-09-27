@@ -175,9 +175,7 @@ export class BuildingsController {
       uniqueFileName,
       file.buffer,
     );
-    // Parse CSV and validate data using CreateBuildingDto
     const parsedData = await this.buildingsService.parseCsv(filePath);
-    // Process and store the data as needed
     await this.buildingsService.processBuildings(parsedData, filePath);
     return {
       statusCode: HttpStatus.OK,

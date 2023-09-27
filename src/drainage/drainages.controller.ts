@@ -121,7 +121,7 @@ export class DrainagesController {
     );
     // Parse CSV and validate data using CreateStreetLightDto
     const parsedData = await this.drainagesService.parseCsv(filePath);
-    // Process and store the data as needed
+
     await this.drainagesService.processDrainage(parsedData, filePath);
     return {
       statusCode: HttpStatus.OK,

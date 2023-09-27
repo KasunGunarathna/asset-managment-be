@@ -126,9 +126,8 @@ export class RoadsController {
       uniqueFileName,
       file.buffer,
     );
-    // Parse CSV and validate data using CreateStreetLightDto
     const parsedData = await this.roadsService.parseCsv(filePath);
-    // Process and store the data as needed
+
     await this.roadsService.processBridges(parsedData, filePath);
     return {
       statusCode: HttpStatus.OK,

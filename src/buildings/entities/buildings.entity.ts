@@ -26,8 +26,8 @@ export class BuildingsEntity {
   @Column()
   plan: string;
 
-  @Column({ type: 'int' }) // Update the column name
-  number_of_stories: number; // Update the property name
+  @Column({ type: 'int' })
+  number_of_stories: number;
 
   @Column({ default: null })
   photo: string;
@@ -35,11 +35,11 @@ export class BuildingsEntity {
   @Column()
   location: string;
 
-  @Column({ type: 'int' }) // Update the column name
-  built_year: number; // Update the property name
+  @Column({ type: 'int' })
+  built_year: number;
 
   @Column({ type: 'enum', enum: BuildingCondition })
-  @IsEnum(BuildingCondition) // Add validation decorator
+  @IsEnum(BuildingCondition)
   condition: string;
 
   @Column()
