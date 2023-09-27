@@ -58,7 +58,6 @@ export class RoadsService {
     if (search) searchQuery = `roads.road_name LIKE '%${search}%'`;
     if (search && (f1value || f2value))
       searchQuery = `(roads.road_name LIKE '%${search}%'  AND`;
-    console.log(`${searchQuery} ${where}`);
     return this.roadsRepository
       .createQueryBuilder('roads')
       .where(`${searchQuery} ${where}`)
@@ -88,7 +87,6 @@ export class RoadsService {
       });
 
       parser.on('error', function (err) {
-        console.error(err.message);
         reject(err);
       });
       parser.on('end', function () {

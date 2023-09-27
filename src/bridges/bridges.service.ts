@@ -60,7 +60,7 @@ export class BridgesService {
       .createQueryBuilder('bridges')
       .where(`${searchQuery} ${where}`)
       .orderBy('bridges.updatedAt', 'DESC')
-      .getMany(); 
+      .getMany();
   }
 
   async parseCsv(filePath: string): Promise<any[]> {
@@ -85,7 +85,6 @@ export class BridgesService {
       });
 
       parser.on('error', function (err) {
-        console.error(err.message);
         reject(err);
       });
 

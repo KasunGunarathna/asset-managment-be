@@ -43,9 +43,6 @@ export class StreetLightsController {
     @Query(new ValidationPipe({ transform: true })) filter: FilterDto,
   ) {
     const { search, f1name, f1value, f2name, f2value } = filter;
-
-    console.log('search, f1name, f1value, f2name, f2value');
-    console.log(search, f1name, f1value, f2name, f2value);
     let data = [];
     data = await this.streetLightsService.findAllBySearch(
       search,

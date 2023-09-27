@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateBuildingDto } from './dto/create-building.dto';
 import { UpdateBuildingDto } from './dto/update-building.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -86,7 +90,6 @@ export class BuildingsService {
       });
 
       parser.on('error', function (err) {
-        console.error(err.message);
         reject(err);
       });
 
@@ -145,7 +148,6 @@ export class BuildingsService {
 
   async readProfileImage(imagePath: string): Promise<fs2.ReadStream> {
     try {
-      
       if (!fs2.existsSync(imagePath)) {
         throw new NotFoundException('Building image not found');
       }
@@ -155,6 +157,4 @@ export class BuildingsService {
       throw new NotFoundException('Building image not found');
     }
   }
-
-  
 }
