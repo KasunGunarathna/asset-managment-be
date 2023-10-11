@@ -39,7 +39,7 @@ export class BridgesController {
   async findAll() {
     let data = [];
     data = await this.bridgesService.findAll();
-    data.map((item) => {
+    data.forEach((item) => {
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
@@ -63,7 +63,7 @@ export class BridgesController {
       f2name,
       f2value,
     );
-    data.map((item) => {
+    data.forEach((item) => {
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {

@@ -49,7 +49,7 @@ export class DrainagesController {
       f2name,
       f2value,
     );
-    data.map((item) => {
+    data.forEach((item) => {
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
@@ -64,7 +64,7 @@ export class DrainagesController {
   async findAll() {
     let data = [];
     data = await this.drainagesService.findAll();
-    data.map((item) => {
+    data.forEach((item) => {
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
