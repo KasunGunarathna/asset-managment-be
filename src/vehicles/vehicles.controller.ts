@@ -14,37 +14,39 @@ import {
   ValidationPipe,
   Query,
 } from '@nestjs/common';
-import { BridgesService } from './bridges.service';
-import { CreateBridgeDto } from './dto/create-bridge.dto';
-import { UpdateBridgeDto } from './dto/update-bridge.dto';
+import { VehiclesService } from './vehicles.service';
+import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { AuthGuard } from 'src/authentication/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilterDto } from './dto/filter.dto';
 
-@Controller('bridges')
-export class BridgesController {
-  constructor(private readonly bridgesService: BridgesService) {}
+@Controller('vehicles')
+export class VehiclesController {
+  constructor(private readonly vehiclesService: VehiclesService) {}
+
   @UseGuards(AuthGuard)
   @Post('/')
-  async create(@Body() createBridgeDto: CreateBridgeDto) {
-    const data = await this.bridgesService.create(createBridgeDto);
+  async create(@Body() createVehicleDto: CreateVehicleDto) {
+    const data = await this.vehiclesService.create(createVehicleDto);
     return {
       statusCode: HttpStatus.OK,
-      message: 'Bridge created successfully',
+      message: 'Vehicle created successfully',
       data,
     };
   }
+
   @UseGuards(AuthGuard)
   @Get('/')
   async findAll() {
     let data = [];
-    data = await this.bridgesService.findAll();
+    data = await this.vehiclesService.findAll();
     data.forEach((item) => {
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
       statusCode: HttpStatus.OK,
-      message: 'Bridge fetched successfully',
+      message: 'Vehicles fetched successfully',
       data: data,
     };
   }
@@ -56,7 +58,7 @@ export class BridgesController {
   ) {
     const { search, f1name, f1value, f2name, f2value } = filter;
     let data = [];
-    data = await this.bridgesService.findAllBySearch(
+    data = await this.vehiclesService.findAllBySearch(
       search,
       f1name,
       f1value,
@@ -68,7 +70,7 @@ export class BridgesController {
     });
     return {
       statusCode: HttpStatus.OK,
-      message: 'Users fetched successfully',
+      message: 'Vehicles fetched successfully',
       data: data,
     };
   }
@@ -76,33 +78,35 @@ export class BridgesController {
   @UseGuards(AuthGuard)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
-    const data = await this.bridgesService.findOne(+id);
+    const data = await this.vehiclesService.findOne(+id);
     return {
       statusCode: HttpStatus.OK,
-      message: 'Bridge fetched successfully',
+      message: 'Vehicle fetched successfully',
       data: data,
     };
   }
+
   @UseGuards(AuthGuard)
   @Patch('/:id')
   async update(
     @Param('id') id: string,
-    @Body() updateBridgeDto: UpdateBridgeDto,
+    @Body() updateVehicleDto: UpdateVehicleDto,
   ) {
-    const data = await this.bridgesService.update(+id, updateBridgeDto);
+    const data = await this.vehiclesService.update(+id, updateVehicleDto);
     return {
       statusCode: HttpStatus.OK,
-      message: 'Bridge updated successfully',
+      message: 'Vehicle updated successfully',
       data: data,
     };
   }
+
   @UseGuards(AuthGuard)
   @Delete('/:id')
   async remove(@Param('id') id: string) {
-    const data = await this.bridgesService.remove(+id);
+    const data = await this.vehiclesService.remove(+id);
     return {
       statusCode: HttpStatus.OK,
-      message: 'Bridge deleted successfully',
+      message: 'Vehicle deleted successfully',
       data: data,
     };
   }
@@ -115,12 +119,12 @@ export class BridgesController {
       throw new BadRequestException('No file uploaded.');
     }
     const uniqueFileName = `${new Date().getTime()}-${file.originalname}`;
-    const filePath = await this.bridgesService.saveFileLocally(
+    const filePath = await this.vehiclesService.saveFileLocally(
       uniqueFileName,
       file.buffer,
     );
-    const parsedData = await this.bridgesService.parseCsv(filePath);
-    await this.bridgesService.processBridges(parsedData, filePath);
+    const parsedData = await this.vehiclesService.parseCsv(filePath);
+    await this.vehiclesService.processVehicles(parsedData, filePath);
     return {
       statusCode: HttpStatus.OK,
       message: 'CSV data uploaded and processed successfully.',

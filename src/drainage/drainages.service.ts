@@ -68,7 +68,7 @@ export class DrainagesService {
     await new Promise<CreateDrainageDto[]>((resolve, reject) => {
       const parser = parse({
         delimiter: ',',
-        columns: true, // Treat the first row as column headers
+        columns: true,
         skip_empty_lines: true,
       });
 
@@ -119,7 +119,7 @@ export class DrainagesService {
 
     try {
       fs2.unlinkSync(filePath);
-      // Use TypeORM repository to insert the records in bulk
+
       return await this.drainagesRepository.insert(drainageToSave);
     } catch (error) {
       throw new BadRequestException(error.message);

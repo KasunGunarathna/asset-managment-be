@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { BuildingsService } from './buildings.service'; // Import your BuildingsService
-import { BuildingsController } from './buildings.controller'; // Import your BuildingsController
+import { BuildingsService } from './buildings.service';
+import { BuildingsController } from './buildings.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BuildingsEntity } from './entities/buildings.entity'; // Import your BuildingsEntity
+import { BuildingsEntity } from './entities/buildings.entity';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [TypeOrmModule.forFeature([BuildingsEntity])],
-  controllers: [BuildingsController], // Use your BuildingsController here
-  providers: [JwtService, BuildingsService], // Use your BuildingsService here
+  controllers: [BuildingsController],
+  providers: [JwtService, BuildingsService],
 })
 export class BuildingsModule {}

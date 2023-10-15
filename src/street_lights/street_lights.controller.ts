@@ -23,6 +23,7 @@ import { UpdateStreetLightDto } from './dto/update-street_lights.dto';
 import { AuthGuard } from 'src/authentication/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilterDto } from './dto/filter.dto';
+import { BASE_URL } from 'src/utils/const';
 
 @Controller('street_lights')
 export class StreetLightsController {
@@ -51,8 +52,8 @@ export class StreetLightsController {
       f2name,
       f2value,
     );
-    data.map((item) => {
-      item.photoUrl = `http://localhost:3000/street_lights/light_image/${item.id}`;
+    data.forEach((item) => {
+      item.photoUrl = `${BASE_URL}/street_lights/light_image/${item.id}`;
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
@@ -66,8 +67,8 @@ export class StreetLightsController {
   async findAll() {
     let data = [];
     data = await this.streetLightsService.findAll();
-    data.map((item) => {
-      item.photoUrl = `http://localhost:3000/street_lights/light_image/${item.id}`;
+    data.forEach((item) => {
+      item.photoUrl = `${BASE_URL}/street_lights/light_image/${item.id}`;
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
@@ -81,7 +82,7 @@ export class StreetLightsController {
   async findOne(@Param('id') id: string) {
     let data = null;
     data = await this.streetLightsService.findOne(+id);
-    data.photoUrl = `http://localhost:3000/street_lights/light_image/${data.id}`;
+    data.photoUrl = `${BASE_URL}/street_lights/light_image/${data.id}`;
     return {
       statusCode: HttpStatus.OK,
       message: 'StreetLight fetched successfully',
@@ -175,9 +176,8 @@ export class StreetLightsController {
       uniqueFileName,
       file.buffer,
     );
-    // Parse CSV and validate data using CreateStreetLightDto
     const parsedData = await this.streetLightsService.parseCsv(filePath);
-    // Process and store the data as needed
+
     await this.streetLightsService.processStreetLights(parsedData, filePath);
     return {
       statusCode: HttpStatus.OK,

@@ -23,6 +23,7 @@ import { UpdateRoadDto } from './dto/update-roads.dto';
 import { AuthGuard } from 'src/authentication/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilterDto } from './dto/filter.dto';
+import { BASE_URL } from 'src/utils/const';
 
 @Controller('roads')
 export class RoadsController {
@@ -42,9 +43,9 @@ export class RoadsController {
   async findAll() {
     let data = [];
     data = await this.roadsService.findAll();
-    data.map((item) => {
-      item.startingPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=1`;
-      item.endPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=2`;
+    data.forEach((item) => {
+      item.startingPhotoUrl = `${BASE_URL}/roads/road_image/${item.id}?photo=1`;
+      item.endPhotoUrl = `${BASE_URL}/roads/road_image/${item.id}?photo=2`;
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
@@ -68,9 +69,9 @@ export class RoadsController {
       f2name,
       f2value,
     );
-    data.map((item) => {
-      item.startingPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=1`;
-      item.endPhotoUrl = `http://localhost:3000/roads/road_image/${item.id}?photo=2`;
+    data.forEach((item) => {
+      item.startingPhotoUrl = `${BASE_URL}/roads/road_image/${item.id}?photo=1`;
+      item.endPhotoUrl = `${BASE_URL}/roads/road_image/${item.id}?photo=2`;
       item.updatedAt = new Date(item.updatedAt).toLocaleString();
     });
     return {
@@ -85,8 +86,8 @@ export class RoadsController {
   async findOne(@Param('id') id: string) {
     let data = null;
     data = await this.roadsService.findOne(+id);
-    data.startingPhotoUrl = `http://localhost:3000/roads/road_image/${data.id}?photo=1`;
-    data.endPhotoUrl = `http://localhost:3000/roads/road_image/${data.id}?photo=2`;
+    data.startingPhotoUrl = `${BASE_URL}/roads/road_image/${data.id}?photo=1`;
+    data.endPhotoUrl = `${BASE_URL}/roads/road_image/${data.id}?photo=2`;
     return {
       statusCode: HttpStatus.OK,
       message: 'Road fetched successfully',
@@ -126,9 +127,8 @@ export class RoadsController {
       uniqueFileName,
       file.buffer,
     );
-    // Parse CSV and validate data using CreateStreetLightDto
     const parsedData = await this.roadsService.parseCsv(filePath);
-    // Process and store the data as needed
+
     await this.roadsService.processBridges(parsedData, filePath);
     return {
       statusCode: HttpStatus.OK,

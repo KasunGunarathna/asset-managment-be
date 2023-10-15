@@ -9,6 +9,7 @@ import { DrainagesModule } from './drainage/drainages.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './authentication/auth.module';
 import { BuildingsModule } from './buildings/buildings.module';
+import { VehiclesModule } from './vehicles/vehicles.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { BuildingsModule } from './buildings/buildings.module';
     DrainagesModule,
     UsersModule,
     AuthModule,
+    VehiclesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

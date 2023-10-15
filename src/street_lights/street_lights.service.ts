@@ -87,7 +87,7 @@ export class StreetLightsService {
     await new Promise<CreateStreetLightDto[]>((resolve, reject) => {
       const parser = parse({
         delimiter: ',',
-        columns: true, // Treat the first row as column headers
+        columns: true,
         skip_empty_lines: true,
       });
 
@@ -136,7 +136,7 @@ export class StreetLightsService {
 
     try {
       fs2.unlinkSync(filePath);
-      // Use TypeORM repository to insert the records in bulk
+
       return await this.streetLightsRepository.insert(streetLightsToSave);
     } catch (error) {
       throw new BadRequestException(error.message);
